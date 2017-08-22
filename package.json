@@ -1,0 +1,29 @@
+{
+  "name": "dorothybot",
+  "version": "0.0.1",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FlatBartender/DorothyBot.git"
+  },
+  "author": "FlatBartender",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FlatBartender/DorothyBot/issues"
+  },
+  "homepage": "https://github.com/FlatBartender/DorothyBot#readme",
+  "dependencies": {
+    "bufferutil": "^3.0.2",
+    "discord.js": "^11.1.0",
+    "erlpack": "github:hammerandchisel/erlpack",
+    "node-opus": "^0.2.6",
+    "sodium": "^2.0.1",
+    "uws": "^8.14.1",
+    "youtube-audio-stream": "0.0.50",
+    "ytdl-core": "^0.16.0"
+  }
+}
