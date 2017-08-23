@@ -90,6 +90,38 @@ const commands = {
         }
         
         if (connection.dispatcher) connection.dispatcher.end();
+    },
+    "resume": function (message) {
+        if (!message.guild) return;
+
+        let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
+        if (!connection) {
+            message.channel.send("You can't play if you're not listening!");
+            return;
+        }
+        
+        if (!connection.dispatcher) {
+            message.channel.send("But I'm not playing anything...");
+            return;
+        }
+
+        connection.dispatcher.resume();
+    },
+    "pause": function (message) {
+        if (!message.guild) return;
+
+        let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
+        if (!connection) {
+            message.channel.send("You can't play if you're not listening!");
+            return;
+        }
+        
+        if (!connection.dispatcher) {
+            message.channel.send("But I'm not playing anything...");
+            return;
+        }
+
+        connection.dispatcher.pause();
     }
 };
 
