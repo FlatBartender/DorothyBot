@@ -44,6 +44,7 @@ const commands = {
         if (connection) {
             connection.disconnect();
             message.channel.send("I'm leaaaviiiing! Bye!");
+            delete queues[connection];
             return;
         } else {
             message.channel.send("I can't leave a channel I'm not in...");
