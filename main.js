@@ -1,7 +1,9 @@
 const Discord = require("discord.js");
 const ytdl = require('ytdl-core');
+const fs = require("fs");
 
-const token = '***REMOVED***';
+const settings = JSON.parse(fs.readFileSync("settings.json"));
+const token = settings.token;
 
 const client = new Discord.Client({ autoReconnect: true});
 
