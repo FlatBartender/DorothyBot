@@ -106,6 +106,7 @@ const commands = {
         }
 
         connection.dispatcher.resume();
+        message.channel.send("Music resumed!");
     },
     "pause": function (message) {
         if (!message.guild) return;
@@ -122,6 +123,7 @@ const commands = {
         }
 
         connection.dispatcher.pause();
+        message.channel.send("Music paused!");
     }
 };
 
