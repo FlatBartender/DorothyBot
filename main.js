@@ -3,12 +3,13 @@ const ytdl = require('ytdl-core');
 
 const token = '***REMOVED***';
 
-const client = new Discord.Client();
+const client = new Discord.Client({ autoReconnect: true});
 
 client.on('ready', () => {
     console.log('NOBODY EXPECTS THE DOROTHINQUISITION!');
 });
 
+const queues = {};
 
 const prefix = "d!";
 const commands = {
@@ -21,9 +22,10 @@ const commands = {
         let channel = message.member.voiceChannel;
         if (!channel) {
             message.reply("You're not in a voice channel!");
+            return;
         }
         
-        let connection = client.voiceConnections.find('channel', message.member.voiceChannel);
+        let connection = client.voiceConnections.find('channel', channel);
         if (connection) {
             message.reply("I'm already in this voice channel!");
             return;
@@ -54,17 +56,70 @@ const commands = {
             return;
         }
 
-        let dispatcher;
-        if (message.content.includes("youtu.be") || message.content.includes("www.youtube.com")) {
-            // It's a youtube video, play it
-            let stream = ytdl(content, { filter: 'audioonly' });
-            dispatcher = connection.playStream(stream);
-        } else {
-            // It's something else, play it as a file
-            dispatcher = connection.playFile(content);
+        try {
+            ytdl.getInfo(content).then((infos) => {
+                message.channel.send(`Queued ${infos.title}`);
+                if (queues[connection] === undefined) queues[connection] = [];
+                queues[connection].push({url: content, infos: infos});
+                if (connection.speaking === false) {
+                    playNext(message, connection);
+                }
+            }).catch( (err) => {
+                console.log(`Error playing song: ${err}`);
+                message.channel.send("I can't play this...");
+            });
+        } catch (err) {
+            console.log(`Error playing song: ${err}`);
+            message.channel.send("I can't play this...");
         }
     },
+    "skip": function (message) {
+        if (!message.guild) return;
+
+        let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
+        if (!connection) {
+            message.channel.send("You can't skip if you're not listening!");
+            return;
+        }
+        
+        if (!connection.dispatcher) {
+            message.channel.send("But I'm not playing anything...");
+            return;
+        }
+        
+        if (connection.dispatcher) connection.dispatcher.end();
+    }
 };
+
+function playNext(message, connection) {
+    let queue = queues[connection];
+    if (!queue) {
+        //Queue is empty.
+        message.channel.send("I have nothing to play.");
+        return;
+    }
+
+    if (queue.length === 0) {
+        //Queue is empty.
+        message.channel.send("I have nothing left to play...");
+        return;
+    }
+    
+    if (connection.dispatcher) {
+        connection.dispatcher.end();
+        connection.dispatcher = null;
+        return;
+    }
+
+    let song = queue.shift();
+    message.channel.send(`Now playing ${song.infos.title}`);
+    let stream = ytdl(song.url, { filter: 'audioonly' });
+    let dispatcher = connection.playStream(stream, { seek: 0 });
+    dispatcher.once('end', () => {
+        connection.dispatcher = null;
+        playNext(message, connection);
+    });
+}
 
 client.on('message', message => {
     if (message.content.startsWith(prefix)) {
