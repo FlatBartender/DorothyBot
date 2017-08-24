@@ -20,6 +20,7 @@
     "bufferutil": "^3.0.2",
     "discord.js": "^11.1.0",
     "erlpack": "github:hammerandchisel/erlpack",
+    "mongodb": "^2.2.31",
     "node-opus": "^0.2.6",
     "sodium": "^2.0.1",
     "uws": "^8.14.1",
