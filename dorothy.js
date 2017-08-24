@@ -50,13 +50,26 @@ client.on('message', async (message) => {
                 // Check there are command-specific permissions...
                 if (c.permission) {
                     // If there are, check permissions. Throw true if user is authorized, false otherwise.
-                    if (c.permission(message.member)) throw true;
+                    let perm;
+                    try {
+                        perm = await c.permission(message.member);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                    if (perm) throw true;
                     else throw false;
                 }
                 
                 // Check for module-specific permissions...
                 if (c.module.permission) {
-                    if (c.module.permission(command, message.member)) throw true;
+                    let perm;
+                    try {
+                        perm = await c.module.permission(command, message.member);
+                    } catch (err) {
+                        console.log(err);
+                    }
+
+                    if (perm) throw true;
                     else throw false;
                 }
 
