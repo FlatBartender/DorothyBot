@@ -11,160 +11,63 @@ client.on('ready', () => {
     console.log('NOBODY EXPECTS THE DOROTHINQUISITION!');
 });
 
-const queues = {};
+const modules = require("./modules/");
 
 const prefix = "d!";
-const commands = {
-    "ping": function (message) {
-        message.reply("pong");
-    },
-    "voice": function (message) {
-        if (!message.guild) return;
 
-        let channel = message.member.voiceChannel;
-        if (!channel) {
-            message.reply("You're not in a voice channel!");
-            return;
-        }
-        
-        let connection = client.voiceConnections.find('channel', channel);
-        if (connection) {
-            message.reply("I'm already in this voice channel!");
-            return;
-        }
-        
-        channel.join().then((connection) => {
-            message.reply("I have successfully connected to the voice channel and am ready to play some music!");
-        });
-    },
-    "leave": function (message) {
-        if (!message.guild) return;
-
-        let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
-        if (connection) {
-            connection.disconnect();
-            message.channel.send("I'm leaaaviiiing! Bye!");
-            delete queues[connection];
-            return;
-        } else {
-            message.channel.send("I can't leave a channel I'm not in...");
-        }
-    },
-    "request": function (message, content) {
-        if (!message.guild) return;
-
-        let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
-        if (!connection) {
-            message.channel.send("I can't play anything if I'm not in a channel...");
-            return;
-        }
-
-        try {
-            ytdl.getInfo(content).then((infos) => {
-                message.channel.send(`Queued ${infos.title}`);
-                if (queues[connection] === undefined) queues[connection] = [];
-                queues[connection].push({url: content, infos: infos});
-                if (connection.speaking === false) {
-                    playNext(message, connection);
-                }
-            }).catch( (err) => {
-                console.log(`Error playing song: ${err}`);
-                message.channel.send("I can't play this...");
-            });
-        } catch (err) {
-            console.log(`Error playing song: ${err}`);
-            message.channel.send("I can't play this...");
-        }
-    },
-    "skip": function (message) {
-        if (!message.guild) return;
-
-        let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
-        if (!connection) {
-            message.channel.send("You can't skip if you're not listening!");
-            return;
-        }
-        
-        if (!connection.dispatcher) {
-            message.channel.send("But I'm not playing anything...");
-            return;
-        }
-        
-        if (connection.dispatcher) connection.dispatcher.end();
-    },
-    "resume": function (message) {
-        if (!message.guild) return;
-
-        let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
-        if (!connection) {
-            message.channel.send("You can't play if you're not listening!");
-            return;
-        }
-        
-        if (!connection.dispatcher) {
-            message.channel.send("But I'm not playing anything...");
-            return;
-        }
-
-        connection.dispatcher.resume();
-        message.channel.send("Music resumed!");
-    },
-    "pause": function (message) {
-        if (!message.guild) return;
-
-        let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
-        if (!connection) {
-            message.channel.send("You can't play if you're not listening!");
-            return;
-        }
-        
-        if (!connection.dispatcher) {
-            message.channel.send("But I'm not playing anything...");
-            return;
-        }
-
-        connection.dispatcher.pause();
-        message.channel.send("Music paused!");
-    }
-};
-
-function playNext(message, connection) {
-    let queue = queues[connection];
-    if (!queue) {
-        //Queue is empty.
-        message.channel.send("I have nothing to play.");
-        return;
-    }
-
-    if (queue.length === 0) {
-        //Queue is empty.
-        message.channel.send("I have nothing left to play...");
-        return;
-    }
-    
-    if (connection.dispatcher) {
-        connection.dispatcher.end();
-        connection.dispatcher = null;
-        return;
-    }
-
-    let song = queue.shift();
-    message.channel.send(`Now playing ${song.infos.title}`);
-    let stream = ytdl(song.url, { filter: 'audioonly' });
-    let dispatcher = connection.playStream(stream, { seek: 0 });
-    dispatcher.once('end', () => {
-        connection.dispatcher = null;
-        playNext(message, connection);
+// Prepare the global command object for easy permission management and faster reaction.
+const commands = {};
+modules.forEach((module) => {
+    Object.keys(module.commands).forEach((command) => {
+        // Put the command in the object
+        commands[command] = module.commands[command];
+        /// Link it to its module for easy permission retrieval
+        commands[command].module = module;
     });
+});
+
+// TODO: have real permissions
+function default_permission() {
+    return true;
 }
 
 client.on('message', message => {
     if (message.content.startsWith(prefix)) {
         // Get command
         let words = message.content.split(' ');
+        // The actual command
         let command = words.shift().substring(prefix.length);
+        // For easy acces to the command's string
         let content = words.join(" ");
-        if (commands[command]) commands[command](message, content);
+
+        // If the command exists
+        if (commands[command]) {
+            let command_object = commands[command];
+            
+            try {
+                // Check there are command-specific permissions...
+                if (command_object.permission) {
+                    // If there are, check permissions. Throw true if user is authorised, false otherwise.
+                    if (command_object.permission(message.member)) throw true;
+                    else throw false;
+                }
+                
+                // Check for module-specific permissions...
+                if (command_object.module.permission) {
+                    if (command_object.module.permission(message.member)) throw true;
+                    else throw false;
+                }
+
+                // Check for default permission...
+                if (default_permission) {
+                    if (default_permission(message.member)) throw true;
+                    else throw false;
+                }
+            } catch (auth) {
+                if (auth) commands[command].callback(message, content);
+                else message.reply("you can't do this...");
+            }
+        }
     }
 });
 
