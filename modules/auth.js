@@ -26,11 +26,11 @@ exports.commands = {
             
             let module_name = perm[0];
             let command_name = perm[1];
-            let module_id = global.modules[module_name].id;
-            if (module_id === undefined) {
+            if (global.modules[module_name] === undefined) {
                 message.channel.send("I can't find this module...");
                 return;
             }
+            let module_id = global.modules[module_name].id;
             let command_id = command_name ? global.commands[command_name].id : 0;
             if (command_name && command_id === 0) {
                 message.channel.send("I can't find this command...");
@@ -89,6 +89,7 @@ exports.commands = {
     }
 };
 exports.name = "auth";
+exports.description = "Module providing permissions. Can only be used by users with the manage server permission.";
 
 exports.default_permission = async function default_permission(module, command, member) {
     if (member.guild === undefined) return false;
