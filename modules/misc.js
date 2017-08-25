@@ -18,7 +18,7 @@ exports.commands = {
             help_lines.push("```");
             Object.keys(global.modules).forEach((m) => {
                 let module = global.modules[m];
-                help_lines.push(`Module "${module.name}":`);
+                help_lines.push(`Module "${module.name}": ${module.description}`);
                 Object.keys(module.commands).forEach((key) => {
                     help_lines.push(`\t"${key}": ${module.commands[key].description}`);
                 });
@@ -32,6 +32,7 @@ exports.commands = {
     }
 };
 exports.name = "misc";
+xports.description = "Provides miscellaneous functions that everyone can access.";
 // Anyone can use this module.
 exports.permission = function () {
     return true;

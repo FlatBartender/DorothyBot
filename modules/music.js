@@ -147,6 +147,7 @@ exports.commands = {
     }
 };
 exports.name = "music";
+exports.description = "To play music in a voice channel!";
 
 function playNext(message, connection) {
     let queue = queues[connection];
