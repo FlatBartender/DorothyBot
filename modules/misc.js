@@ -32,7 +32,7 @@ exports.commands = {
     }
 };
 exports.name = "misc";
-xports.description = "Provides miscellaneous functions that everyone can access.";
+exports.description = "Provides miscellaneous functions that everyone can access.";
 // Anyone can use this module.
 exports.permission = function () {
     return true;
