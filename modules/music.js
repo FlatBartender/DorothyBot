@@ -183,6 +183,7 @@ function playNext(message, connection) {
     q.dispatcher = connection.playStream(stream);
     q.dispatcher.once('end', (reason) => {
         console.log("Stream ended with reason: ", reason);
+        delete q.dispatcher;
         playNext(message, connection);
     });
     q.dispatcher.on("error", (err) => {
