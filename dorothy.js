@@ -50,42 +50,24 @@ client.on('message', async (message) => {
                 // Check there are command-specific permissions...
                 if (c.permission) {
                     // If there are, check permissions. Throw true if user is authorized, false otherwise.
-                    let perm;
-                    try {
-                        perm = await c.permission(message.member);
-                    } catch (err) {
-                        console.log(err);
-                    }
-                    if (perm) throw true;
+                    if (await c.permission(message.member)) throw true;
                     else throw false;
                 }
                 
                 // Check for module-specific permissions...
                 if (c.module.permission) {
-                    let perm;
-                    try {
-                        perm = await c.module.permission(command, message.member);
-                    } catch (err) {
-                        console.log(err);
-                    }
-
-                    if (perm) throw true;
+                    if (await c.module.permission(command, message.member)) throw true;
                     else throw false;
                 }
 
                 // Check for default permission...
                 if (default_permission) {
-                    let perm;
-                    try {
-                        perm = await default_permission(c.module.name, command, message.member);
-                    } catch (err) {
-                        console.log(err);
-                    }
-                    if (perm) throw true;
+                    if (await default_permission(c.module.name, command, message.member)) throw true;
                     else throw false;
                 }
             } catch (auth) {
                 try {
+                    if (auth instanceof Error) throw auth;
                     if (auth) commands[command].callback(message, content);
                     else message.reply("you can't do this...");
                 } catch (err) {

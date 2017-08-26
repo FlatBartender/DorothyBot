@@ -26,6 +26,7 @@ exports.commands = {
             
             channel.join().then((connection) => {
                 message.reply("I have successfully connected to the voice channel and am ready to play some music!");
+                queues[channel.id] = {dispatcher: null, queue: []};
             });
         }
     },
@@ -38,15 +39,16 @@ exports.commands = {
                 message.channel.send("I'm not even in a channel...");
                 return;
             }
-            if (!message.member.voiceChannel) {
+            let channel = message.member.voiceChannel;
+            if (!channel) {
                 message.channel.send("You're not even in a channel...");
                 return;
             }
-            let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
+            let connection = client.voiceConnections.find("channel", channel);
             if (connection) {
                 connection.disconnect();
                 message.channel.send("I'm leaaaviiiing! Bye!");
-                delete queues[connection];
+                delete queues[channel.id];
                 return;
             } else {
                 message.channel.send("I can't leave a channel I'm not in...");
@@ -56,29 +58,28 @@ exports.commands = {
     "request": {
         id: 3,
         description: "Request a song! Youtube links only, I need to get an upgrade.",
-        callback: function (message, content) {
+        callback: async function (message, content) {
             if (!message.guild) return;
-    
-            let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
+            let channel = message.member.voiceChannel;
+            if (!channel) {
+                message.channel.send("Start with joining the voice channel instead of requesting a song!");
+                return;
+            }
+            let connection = client.voiceConnections.find("channel", channel);
             if (!connection) {
                 message.channel.send("I can't play anything if I'm not in a channel...");
                 return;
             }
     
             try {
-                ytdl.getInfo(content).then((infos) => {
-                    message.channel.send(`Queued ${infos.title}`);
-                    if (queues[connection] === undefined) queues[connection] = [];
-                    queues[connection].push({url: content, infos: infos});
-                    if (connection.speaking === false) {
-                        playNext(message, connection);
-                    }
-                }).catch( (err) => {
-                    console.log(`Error playing song: ${err}`);
-                    message.channel.send("I can't play this...");
-                });
+                let infos = await ytdl.getInfo(content);
+                message.channel.send(`Queued ${infos.title}`);
+                queues[channel.id].queue.push({url: content, infos: infos});
+                if (!queues[channel.id].dispatcher) {
+                    playNext(message, connection);
+                }
             } catch (err) {
-                console.log(`Error playing song: ${err}`);
+                console.log(err);
                 message.channel.send("I can't play this...");
             }
         }
@@ -88,19 +89,23 @@ exports.commands = {
         description: "I'll skip the song I'm currently playing.",
         callback: function (message) {
             if (!message.guild) return;
-    
-            let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
+            let channel = message.member.voiceChannel;
+            if (!channel) {
+                message.channel.send("Start with joining the voice channel instead of skipping a song!");
+                return;
+            }
+            let connection = client.voiceConnections.find("channel", channel);
             if (!connection) {
                 message.channel.send("You can't skip if you're not listening!");
                 return;
             }
             
-            if (!connection.dispatcher) {
+            if (!queues[channel.id].dispatcher) {
                 message.channel.send("But I'm not playing anything...");
                 return;
             }
             
-            if (connection.dispatcher) connection.dispatcher.end();
+            queues[channel.id].dispatcher.end();
         }
     },
     "resume": {
@@ -108,19 +113,23 @@ exports.commands = {
         description: "I'll resume playing if the song was paused!",
         callback: function (message) {
             if (!message.guild) return;
-    
-            let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
+            let channel = message.member.voiceChannel;
+            if (!channel) {
+                message.channel.send("Start with joining the voice channel instead of resuming the song!");
+                return;
+            }  
+            let connection = client.voiceConnections.find("channel", channel);
             if (!connection) {
-                message.channel.send("You can't play if you're not listening!");
+                message.channel.send("You can't resume if you're not listening!");
                 return;
             }
             
-            if (!connection.dispatcher) {
+            if (!queues[channel.id].dispatcher) {
                 message.channel.send("But I'm not playing anything...");
                 return;
             }
     
-            connection.dispatcher.resume();
+            queues[channel.id].dispatcher.resume();
             message.channel.send("Music resumed!");
         }
     },
@@ -129,19 +138,23 @@ exports.commands = {
         description: "I'll pause the song I'm playing!",
         callback: function (message) {
             if (!message.guild) return;
-    
-            let connection = client.voiceConnections.find("channel", message.member.voiceChannel);
+            let channel = message.member.voiceChannel;
+            if (!channel) {
+                message.channel.send("Start with joining the voice channel instead of pausing the song!");
+                return;
+            }  
+            let connection = client.voiceConnections.find("channel", channel);
             if (!connection) {
-                message.channel.send("You can't play if you're not listening!");
+                message.channel.send("You can't pause if you're not listening!");
                 return;
             }
             
-            if (!connection.dispatcher) {
+            if (!queues[channel.id].dispatcher) {
                 message.channel.send("But I'm not playing anything...");
                 return;
             }
     
-            connection.dispatcher.pause();
+            queues[channel.id].dispatcher.pause();
             message.channel.send("Music paused!");
         }
     }
@@ -150,31 +163,29 @@ exports.name = "music";
 exports.description = "To play music in a voice channel!";
 
 function playNext(message, connection) {
-    let queue = queues[connection];
-    if (!queue) {
+    let q = queues[message.member.voiceChannel.id];
+    if (!q.queue) {
         //Queue is empty.
         message.channel.send("I have nothing to play.");
         return;
     }
 
-    if (queue.length === 0) {
+    if (q.queue.length === 0) {
         //Queue is empty.
         message.channel.send("I have nothing left to play...");
         return;
     }
     
-    if (connection.dispatcher) {
-        connection.dispatcher.end();
-        connection.dispatcher = null;
-        return;
-    }
-
-    let song = queue.shift();
+    let song = q.queue.shift();
+    q.playing = song;
     message.channel.send(`Now playing ${song.infos.title}`);
     let stream = ytdl(song.url, { filter: 'audioonly' });
-    let dispatcher = connection.playStream(stream, { seek: 0 });
-    dispatcher.once('end', () => {
-        connection.dispatcher = null;
+    q.dispatcher = connection.playStream(stream);
+    q.dispatcher.once('end', (reason) => {
+        console.log("Stream ended with reason: ", reason);
         playNext(message, connection);
+    });
+    q.dispatcher.on("error", (err) => {
+        console.log(err);
     });
 }
