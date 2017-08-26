@@ -14,7 +14,7 @@ exports.id = 3000;
 exports.commands = {
     "grant": {
         id: 1,
-        description: "I'll grant permissions to a user!",
+        description: "I'll grant permissions to a user! Usage: grant <module>[.<command>] @<user> [@<user>...]",
         callback: function (message, content) {
             let args = content.split(" ");
             let perm = args.shift().split(".");
@@ -51,7 +51,7 @@ exports.commands = {
     },
     "revoke": {
         id: 2,
-        description: "I'll remove these permissions from a user!",
+        description: "I'll remove these permissions from a user! Usage: revoke <module>[.<command>] @<user> [@<user>...]",
         callback: function (message, content) {
             let args = content.split(" ");
             let perm = args.shift().split(".");
