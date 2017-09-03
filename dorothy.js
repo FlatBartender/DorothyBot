@@ -16,6 +16,7 @@ const modules = require("./modules/");
 global.modules = modules;
 
 const prefix = "d!";
+const say_prefix = "d%";
 
 // Prepare the global command object for easy permission management and faster reaction.
 const commands = {}
@@ -34,12 +35,24 @@ Object.keys(modules).forEach((module) => {
 const default_permission = modules.auth.default_permission;
 
 client.on('message', async (message) => {
+    if (message.content.startsWith(say_prefix)) {
+        let words = message.content.split(' ');
+        let channel_id = words.shift().substring(say_prefix.length);
+        let content = words.join(' ');
+        let channel = client.channels.get(channel_id);
+        if (!channel) {
+            message.channel.send("I'm not in this channel...");
+            return;
+        }
+        channel.send(content);
+    }
+
     if (message.content.startsWith(prefix)) {
         // Get command
         let words = message.content.split(' ');
         // The actual command
         let command = words.shift().substring(prefix.length);
-        // For easy acces to the command's string
+        // For easy access to the command's string
         let content = words.join(" ");
         
         // If the command exists
