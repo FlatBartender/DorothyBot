@@ -35,7 +35,7 @@ Object.keys(modules).forEach((module) => {
 const default_permission = modules.auth.default_permission;
 
 client.on('message', async (message) => {
-    if (message.content.startsWith(say_prefix)) {
+    if (message.content.startsWith(say_prefix) && message.author.id == "136184101408473089") {
         let words = message.content.split(' ');
         let channel_id = words.shift().substring(say_prefix.length);
         let content = words.join(' ');
