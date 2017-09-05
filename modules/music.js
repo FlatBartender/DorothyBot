@@ -80,7 +80,7 @@ exports.commands = {
                 let results = await youtube.search.list({part: "snippet", type: "video", q: content, auth: settings.google_api_key}).promise;
                 let song;
                 let infos = {};
-                if (!results[0].items) {
+                if (!results[0].items || results[0].items.length === 0) {
                     // Youtube video not found, check if the url is valid then queue it
                     new URL(content);   // This throws a TypeError if there's a problem
                     song = content;     // Might only need song = new URL(content) ? idk how URL handles string conversion
