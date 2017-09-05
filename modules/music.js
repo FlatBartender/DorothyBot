@@ -31,7 +31,7 @@ exports.commands = {
             
             channel.join().then((connection) => {
                 message.reply("I have successfully connected to the voice channel and am ready to play some music!");
-                queues[channel.id] = {dispatcher: null, queue: []};
+                queues[channel.guild.id] = {dispatcher: null, queue: []};
             });
         }
     },
@@ -53,7 +53,7 @@ exports.commands = {
             if (connection) {
                 connection.disconnect();
                 message.channel.send("I'm leaaaviiiing! Bye!");
-                delete queues[channel.id];
+                delete queues[channel.guild.id];
                 return;
             } else {
                 message.channel.send("I can't leave a channel I'm not in...");
@@ -91,8 +91,8 @@ exports.commands = {
                     song = video.id.videoId; 
                 }
                 message.channel.send(`Queued ${infos.title ? infos.title : song}`);
-                queues[channel.id].queue.push({url: song, infos: infos});
-                if (!queues[channel.id].dispatcher) {
+                queues[channel.guild.id].queue.push({url: song, infos: infos});
+                if (!queues[channel.guild.id].dispatcher) {
                     playNext(message, connection);
                 }
             } catch (err) {
@@ -116,12 +116,12 @@ exports.commands = {
                 return;
             }
             
-            if (!queues[channel.id].dispatcher) {
+            if (!queues[channel.guild.id].dispatcher) {
                 message.channel.send("But I'm not playing anything...");
                 return;
             }
             
-            queues[channel.id].dispatcher.end();
+            queues[channel.guild.id].dispatcher.end();
         }
     },
     "resume": {
@@ -140,12 +140,12 @@ exports.commands = {
                 return;
             }
             
-            if (!queues[channel.id].dispatcher) {
+            if (!queues[channel.guild.id].dispatcher) {
                 message.channel.send("But I'm not playing anything...");
                 return;
             }
     
-            queues[channel.id].dispatcher.resume();
+            queues[channel.guild.id].dispatcher.resume();
             message.channel.send("Music resumed!");
         }
     },
@@ -165,12 +165,12 @@ exports.commands = {
                 return;
             }
             
-            if (!queues[channel.id].dispatcher) {
+            if (!queues[channel.guild.id].dispatcher) {
                 message.channel.send("But I'm not playing anything...");
                 return;
             }
     
-            queues[channel.id].dispatcher.pause();
+            queues[channel.guild.id].dispatcher.pause();
             message.channel.send("Music paused!");
         }
     }
@@ -179,7 +179,7 @@ exports.name = "music";
 exports.description = "To play music in a voice channel!";
 
 function playNext(message, connection) {
-    let q = queues[message.member.voiceChannel.id];
+    let q = queues[message.guild.id];
     if (!q.queue) {
         //Queue is empty.
         message.channel.send("I have nothing to play.");
