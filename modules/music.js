@@ -1,9 +1,14 @@
 const ytdl = require('ytdl-core');
+const request = require('request');
+const google = require('googleapis-promise');
+const youtube = google.youtube('v3');
+const URL = require('url').URL;
 
 const queues = {};
 exports.id = 1000;
 
 let client = global.client;
+let gapi = 
 
 exports.commands = {
     "voice": {
@@ -57,7 +62,7 @@ exports.commands = {
     },
     "request": {
         id: 3,
-        description: "Request a song! Youtube links only, I need to get an upgrade.",
+        description: "Request a song! Enter either an URL or some keywords to search with on youtube.",
         callback: async function (message, content) {
             if (!message.guild) return;
             let channel = message.member.voiceChannel;
@@ -72,15 +77,26 @@ exports.commands = {
             }
     
             try {
-                let infos = await ytdl.getInfo(content);
-                message.channel.send(`Queued ${infos.title}`);
-                queues[channel.id].queue.push({url: content, infos: infos});
+                let results = await youtube.search.list({part: "snippet", type: "video", q: content, auth: settings.google_api_key}).promise;
+                let song;
+                let infos = {};
+                if (!results[0].items) {
+                    // Youtube video not found, check if the url is valid then queue it
+                    new URL(content);   // This throws a TypeError if there's a problem
+                    song = content;     // Might only need song = new URL(content) ? idk how URL handles string conversion
+                } else {
+                    // Youtube video found, queue it with the id and let youtube-dl download it
+                    let video = results[0].items[0];
+                    infos = {title: video.snippet.title};
+                    song = video.id.videoId; 
+                }
+                message.channel.send(`Queued ${infos.title ? infos.title : song}`);
+                queues[channel.id].queue.push({url: song, infos: infos});
                 if (!queues[channel.id].dispatcher) {
                     playNext(message, connection);
                 }
             } catch (err) {
                 console.log(err);
-                message.channel.send("I can't play this...");
             }
         }
     },
@@ -178,8 +194,13 @@ function playNext(message, connection) {
     
     let song = q.queue.shift();
     q.playing = song;
-    message.channel.send(`Now playing ${song.infos.title}`);
-    let stream = ytdl(song.url, { filter: 'audioonly' });
+    message.channel.send(`Now playing ${song.infos.title ? song.infos.title : song.url}`);
+    let stream;
+    if (song.infos.title) {
+        stream = ytdl(song.url, { filter: 'audioonly' });
+    } else {
+        stream = request(song.url);
+    }
     q.dispatcher = connection.playStream(stream);
     q.dispatcher.once('end', (reason) => {
         console.log("Stream ended with reason: ", reason);
