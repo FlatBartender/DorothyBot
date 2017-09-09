@@ -19,6 +19,7 @@
   "dependencies": {
     "bufferutil": "^3.0.2",
     "discord.js": "^11.1.0",
+    "elizabot": "0.0.2",
     "erlpack": "github:hammerandchisel/erlpack",
     "googleapis": "^21.3.0",
     "googleapis-promise": "^16.1.0-a1",
