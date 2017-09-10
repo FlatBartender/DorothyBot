@@ -8,7 +8,6 @@ const queues = {};
 exports.id = 1000;
 
 let client = global.client;
-let gapi = 
 
 exports.commands = {
     "voice": {
@@ -201,7 +200,7 @@ function playNext(message, connection) {
     } else {
         stream = request(song.url);
     }
-    q.dispatcher = connection.playStream(stream);
+    q.dispatcher = connection.playStream(stream, {volume: 0.3});
     q.dispatcher.once('end', (reason) => {
         console.log("Stream ended with reason: ", reason);
         delete q.dispatcher;
