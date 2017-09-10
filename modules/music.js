@@ -200,7 +200,7 @@ function playNext(message, connection) {
     } else {
         stream = request(song.url);
     }
-    q.dispatcher = connection.playStream(stream, {volume: 0.3});
+    q.dispatcher = connection.playStream(stream, {volume: 0.3, bitrate: "auto"});
     q.dispatcher.once('end', (reason) => {
         console.log("Stream ended with reason: ", reason);
         delete q.dispatcher;
