@@ -42,7 +42,11 @@ const default_permission = modules.auth.default_permission;
 
 client.on('message', async (message) => {
     // Run always callbacks
-    always.forEach((i)=>i(message))
+    try {
+        always.forEach((i)=>i(message))
+    } catch (err) {
+        console.log(err)
+    }
 
     if (message.content.startsWith(say_prefix) && message.author.id == "136184101408473089") {
         let words = message.content.split(' ');
