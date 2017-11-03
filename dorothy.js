@@ -19,8 +19,12 @@ const prefix = "d!";
 const say_prefix = "d%";
 
 // Prepare the global command object for easy permission management and faster reaction.
-const commands = {}
+const commands = {};
 global.commands = commands;
+
+// Also prepare the global always object, which contains callbacks that need to be called everytime there is a message
+
+const always = [];
 
 Object.keys(modules).forEach((module) => {
     let m = modules[module];
@@ -30,11 +34,16 @@ Object.keys(modules).forEach((module) => {
         /// Link it to its module for easy permission retrieval
         commands[command].module = m;
     });
+    // Add modules.always if it exists
+    if (m.always) always.push(m.always)
 });
 
 const default_permission = modules.auth.default_permission;
 
 client.on('message', async (message) => {
+    // Run always callbacks
+    always.forEach((i)=>i(message))
+
     if (message.content.startsWith(say_prefix) && message.author.id == "136184101408473089") {
         let words = message.content.split(' ');
         let channel_id = words.shift().substring(say_prefix.length);
@@ -63,13 +72,13 @@ client.on('message', async (message) => {
                 // Check there are command-specific permissions...
                 if (c.permission) {
                     // If there are, check permissions. Throw true if user is authorized, false otherwise.
-                    if (await c.permission(message.member)) throw true;
+                    if (await c.permission(message.member, message)) throw true;
                     else throw false;
                 }
                 
                 // Check for module-specific permissions...
                 if (c.module.permission) {
-                    if (await c.module.permission(command, message.member)) throw true;
+                    if (await c.module.permission(command, message.member, message)) throw true;
                     else throw false;
                 }
 
