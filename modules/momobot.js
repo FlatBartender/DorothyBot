@@ -10,8 +10,8 @@ mongo.connect(global.settings.mongo_url, function (err, connection) {
     momo_db = db.collection("momobot")
 })
 
-// So we can just shift and push to add messages
-let latest_messages = [0,0,0,0,0,0,0,0,0,0]
+// It's actually a guild -> 10 latest message author ID array map
+let latest_messages = {}
 
 class User {
     constructor() {
@@ -49,7 +49,7 @@ class User {
 
     get xp_to_next() {
         let xp = 100
-        for (let lvl = 2; lvl < this.level; lvl++) {
+        for (let lvl = 1; lvl < this.level; lvl++) {
             xp += lvl * 10
         }
         return xp
@@ -156,7 +156,7 @@ exports.commands = {
                msg += `Lv. ${user.level} - ${message.author.username}\n`
                msg += `    EXP: ${user.xp}/${user.xp_to_next}\n`
                msg += `  TOTAL: ${user.total_exp}\n`
-               msg += `Next Lv: ${user.level + 1}\n`
+               msg += `Next Lv: ${user.xp_to_next - user.xp}\n`
                msg += "```"
             message.channel.send(msg)
         }
@@ -204,18 +204,20 @@ exports.always = async function (message) {
     } else if (message.channel.type == "text") {
         let user = new User()
         await user.load(message.author.id)
+        let prev_lvl = user.level
         // Exp amount: 10 - 2*number_of_messages_from_user_in_last_messages
         // /2 if message is one word only (no space)
         // min 0
         let exp_amount = 10 - latest_messages.reduce( (acc, val) => acc += val == message.author.id ? 2 : 0)
         // Message is in server, add exp
-        latest_messages.shift()
-        latest_messages.push(message.author.id)
+        if (!latest_messages[message.channel.id]) latest_messages[message.channel.id] = [0,0,0,0,0,0,0,0,0,0]
+        latest_messages[message.channel.id].shift()
+        latest_messages[message.channel.id].push(message.author.id)
 
         if (message.content.indexOf(" ") == -1) exp_amount /= 2
         if (exp_amount < 0) exp_amount = 0
         user.xp += exp_amount
-        if (user.level % 5 == 0) {
+        if (user.level % 5 == 0 && user.level != prev_lvl) {
             let msg
             if (user.level == 10) {
                 msg = message.author.username + " just reached level 10! DM me the text !momoclasshelp for info on how to get a name color."
