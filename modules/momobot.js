@@ -1,17 +1,173 @@
 const mongo = require("mongodb").MongoClient
 const assert = require("assert")
+const fs = require("fs")
 
 let db
 let momo_db
-
-mongo.connect(global.settings.mongo_url, function (err, connection) {
+let tallgrass_channels
+mongo.connect(global.settings.mongo_url, async function (err, connection) {
     assert.equal(null, err)
     db = connection
     momo_db = db.collection("momobot")
+    let res = await momo_db.findOne({_id: "tallgrass_channels"})
+    if (!res) {
+        momo_db.insertOne({_id: "tallgrass_channels", channels: {}})
+        tallgrass_channels = {}
+    } else {
+        tallgrass_channels = res.channels
+    }
+    // Every 30 seconds, check and try to spawn momos in each server
+    setInterval(function () {
+        console.log("momobot: Trying to spawn momos...")
+        for (let cid in tallgrass_channels) {
+            let channel = global.client.channels.get(cid)
+            if (!channel) continue
+            momo_encounter(channel)
+        }
+    }, 30000)
 })
+
+function random(min, max)
+{
+    return Math.floor(Math.random() * (max-min) + min)
+}
+
+let momos = JSON.parse(fs.readFileSync("data/momos.json"))
 
 // It's actually a guild -> 10 latest message author ID array map
 let latest_messages = {}
+
+function generate_momo_pool() {
+    let momo_pool = []
+    // Fill momo pool
+    for (var h = 0; h < momos.length; h++) {
+        for (var j = 0; j < (101-momos[h].rarity); j++){
+            momo_pool.push(h)
+        }
+    }
+    
+    return momo_pool
+}
+// Function helper to pick a new momo
+function pick_momo(channel) {
+    let momo_pool = tallgrass_channels[channel.id].pool
+    let momo = momo_pool[random(0, momo_pool.length)]
+    // Don't forget to save the new pool. atm it doesn't change, but it will probably in the future.
+    momo_db.updateOne({_id: "tallgrass_channels"}, {$set: {channels: tallgrass_channels}})
+    return momo
+}
+
+async function momo_encounter(channel) {
+    if (!tallgrass_channels[channel.id].encounter) {
+        // One chance out of 20 to encounter a momo everytime this function is called
+        if (random(0, 1) == 0) {
+            console.log("momobot: spawning momo in " + channel.id)
+            let encounter = tallgrass_channels[channel.id].encounter = new TallgrassEncounter(channel)
+            console.log("momobot: a wild momo appeared: " + encounter.momo.name)
+            setTimeout(function () {
+                if (tallgrass_channels[channel.id].encounter) {
+                    encounter.clean()
+                    delete tallgrass_channels[channel.id].encounter
+                }
+            }, encounter.timer)
+        }
+    }
+}
+class TallgrassEncounter {
+
+    constructor(channel, momo = null) {
+        this.channel = channel
+        this.momo = (momo || new Momo(pick_momo(channel)))
+        this.momo.hp = 0
+        this.amount = 3
+        // Calm momos stay 2 minutes
+        this.timer = 120000
+        this.lifeword = null
+        this.try_catch = false
+
+        let message = "", hp_message = ""
+        if (random(0, 4) == 0) {
+            // The momo is angry.
+            message = TallgrassEncounter.captions[random(0, TallgrassEncounter.captions.length)]
+            this.momo.hp = Math.ceil(this.momo.rarity/7)
+            this.lifeword = TallgrassEncounter.hp[random(0, TallgrassEncounter.hp.length)]
+            hp_message = "```" + `${this.lifeword}: ${this.momo.hp}` + "```"
+            // Angry momos stay 5 minutes
+            this.timer = 300000
+        }
+        this.send_messages(message, hp_message)
+    }
+
+    async send_messages(message, hp_message) {
+        let image = this.momo.image
+        if (message != "") {
+            this.message = await this.channel.send(message, {files: [image]})
+        } else {
+            this.message = await this.channel.send({files: [image]})
+        }
+        if (hp_message != "") this.hp_message = await this.channel.send(hp_message)
+    }
+
+    async send_hpmsg() {
+        this.hp_message = this.channel.send("```" + `${this.lifeword}: ${this.momo.hp}` + "```")
+    }
+
+    async send_image() {
+        this.message = this.channel.send(fs.readFileSync(this.momo.image))
+    }
+
+    clean() {
+        if (this.message) this.message.delete()
+        if (this.hp_message) this.hp_message.delete()
+
+        if (this.amount != 3 && this.amount != 0){
+            this.channel.send(`:dash: The remaining ${this.momo.name}s fled. Congrats to those who caught one! Data was saved to the !momodex.
+:exclamation: Don't forget to !swap it into your !momosquad if you want to keep it!`)
+        } else if (this.amount == 3 && this.try_catch) {
+            this.channel.send(":dash: The Momo left.")
+        } else if (this.amount == 0) {
+            this.channel.send(`:floppy_disk: All of the ${this.moo.name}s were caught. Data was saved to the !momodex.
+:exclamation: Don't forget to !swap it into your !momosquad if you want to keep it!`)
+        }
+    }
+
+    clean_hpmsg() {
+        if (this.hp_message) this.hp_message.delete()
+    }
+
+    clean_msg() {
+        if (this.message) this.message.delete()
+    }
+}
+
+TallgrassEncounter.captions = [
+    ":anger: This one's not going down without a fight!",
+    ":anger: A wild Momo appeared!",
+    ":anger: A Momo draws near!",
+    ":anger: Oooh here she comes!",
+    ":anger: Hey! Watch out!",
+    ":anger: Uh oh, she looks furious!",
+    ":anger: You won't be catching this one that easily!",
+    ":anger: A weapon to surpass Metal Gear?!",
+    ":anger: WOAH!!",
+    ":anger: Dang, she looks tough!"
+]
+TallgrassEncounter.hp = [
+    "Hit Points",
+    "Health",
+    "Life",
+    "Energy",
+    "Stamina",
+    "Vitality",
+    "Endurance",
+    "Gumption",
+    "Power",
+    "Strength",
+    "Moe",
+    "Moxy",
+    "Guts",
+    "Bravery"
+]
 
 class User {
     constructor() {
@@ -25,12 +181,24 @@ class User {
             this._xp = 0
             this._id = id
             this.level = 1
+            this.momos = []
+            this.momodex = []
+            this._peaches = 0
             momo_db.insertOne({"_id": id, user: this})
         } else {
             // User exists, copy it (can't assign user.user to this)
             for (let prop in user.user) this[prop] = user.user[prop]
         }
 
+    }
+    
+    set peaches(peaches) {
+        this._peaches = peaches
+        this.save()
+    }
+
+    get peaches() {
+        return this._peaches
     }
 
     set xp(xp) {
@@ -40,8 +208,8 @@ class User {
             this.level++
             this._xp -= this.xp_to_next
         }
-        momo_db.updateOne({"_id": this._id}, { $set: {user: this}}) 
-    }
+        this.save()
+    }   
 
     get xp() {
         return this._xp
@@ -63,26 +231,88 @@ class User {
         }
         return xp + this.xp
     }
+
+    save() {
+        momo_db.updateOne({"_id": this._id}, { $set: {user: this}}) 
+    }
 }
 
 class Momo {
-    Momo(number) {
-        this.number = number
+    constructor(type) {
         this.type = type
-        this.xp = xp
-        this.next = next
-        this.power = power
-        this.pet = new Pet()
-        this.hp = hp
-        this.hunger = hunger
+        this.level = 1
+        this.xp = random(0, (momos[type].rarity) * 10)
+        this.power = Math.ceil(momos[type].rarity/2)
+        this._hp = (4 + (Math.ceil((momos[type].rarity)/10)*10))
+    }
+
+    set hp(hp) {
+        if (hp < 0) hp = 0
+        this._hp = hp
+    }
+
+    get hp() {
+        return this._hp
+    }
+
+    set xp(xp) {
+        this._xp = xp
+        while (this._xp >= this.xp_to_next) {
+            if (this.level >= 99) break
+            this._xp -= this.xp_to_next
+            this.level++
+            this.hp += 2
+            this.power += random(0, momos[this.type].rarity + 1)
+        }
+
+        while (this._xp < 0) {
+            if (this.level <= 1) {
+                this._xp = 0
+                break
+            }
+            this._xp += this.xp_to_next - this.level
+            this.level--
+            this.hp -= 2
+            this.power -= random(0, momos[this.type].rarity + 1)
+        }
+        if (this.power < 1) this.power = 1
+    }
+
+    get xp() {
+        return this._xp
+    }
+
+    get rarity() {
+        return momos[this.type].rarity
+    }
+
+    get name() {
+        return momos[this.type].name
+    }
+
+    get xp_to_next() {
+        // @TODO Implement lvl up xp diff
+        let xp
+        for (let i = 1; i <= this.level; i++) {
+            xp += i
+        }
+        return xp
     }
 
     get image() {
-        return "images/"+number+".png"
+        return "data/Momos/"+(this.type+1)+".png"
     }
 }
 
-exports.id = "momobot";
+class Pet {
+    constructor(type, hp) {
+        this.type = type
+        this.hp = hp
+    }
+}
+
+exports.id = 9000
+exports.name = "momobot"
 
 exports.commands = {
     "eventmomo": {
@@ -96,25 +326,98 @@ exports.commands = {
     "catchmomo": {
         id: 2,
         description: "",
+        permission: tallgrass_only,
         callback: async function (message, content) {
             // Catch current available momo, if she has 0 HP
-            // Only available in tallgrass
+            let channel = message.channel
+            let encounter = tallgrass_channels[channel.id].encounter
+            // There's no current encounter, do nothing
+            if (!encounter) return
+            // Otherwise, check if it has HP. If it does, notify the user and do nothing.
+            if (encounter.momo.hp > 0) {
+                channel.send(":no_entry_sign: That Momo is too out of control to catch! Weaken it with !momofight first!")
+                return
+            }
+            // If it doesn't have HP, remove one from the encounter number and create a new momo in the 6th slot of the user
+            let user = new User()
+            encounter.try_catch = true
+            await user.load(message.author.id)
+            if (user.momodex[encounter.momo.type]) {
+                channel.send(":no_entry_sign: You already have that Momo, give someone else a chance.")
+                return
+            }
+            encounter.amount--
+            user.momos[5] = new Momo(encounter.momo.type)
+            user.momodex[encounter.momo.type] = true
+            channel.send(`:gift: Gotcha! ${message.author.username} caught a ${encounter.momo.name}! There's ${encounter.amount} left.`)
+            console.log(`momobot: ${message.author.username} (${message.author.id}) caught ${encounter.momo} in channel ${message.channel.id}`)
+            if (encounter.amount == 0) {
+                message.channel.send(":floppy_disk: All of the "+encounter.momo.name+"s were caught. Data was saved to the !momodex.\n:exclamation: Don't forget to !swap it into your !momosquad if you want to keep it!")
+                encounter.clean()
+                delete tallgrass_channel[channel.id].encounter
+            }
+            user.save()
         }
     },
     "momofight": {
         id: 3,
         description: "",
+        permission: tallgrass_only,
         callback: async function (message, content) {
             // Fights current momo, if she has >0 HP
-            // Only available in tallgrass
+            // Find out whether the user has a momo or not
+            let user = new User()
+            await user.load(message.author.id)
+            let channel = message.channel
+            let encounter = tallgrass_channels[channel.id].encounter
+            // There's no current encounter, do nothing
+            if (!encounter) return
+            // Momo has 0 HP, do nothing
+            if (encounter.momo.hp == 0) return
+            // If the user has no momo
+            if (user.momos == []) {
+                message.channel.send(":no_entry_sign: You don't have any Momos in your squad to fight with! Use the command !momosquad in a DM with me to manage your team.")
+                return
+            }
+            // Since we're not entirely sure how many momos the user have, let's make a new array with only those
+            // We might have something in 5th cell, but empty cells before
+            // @PBUG
+            let usermomos = user.momos.map((m)=>m)
+            // Chose the fighter
+            let fighter = usermomos[random(0, usermomos.length)]
+            // Calculate damage
+            let damage = Math.ceil(random(0, fighter.power)/encounter.momo.rarity)
+            // Do damage
+            encounter.momo.hp -= damage
+            encounter.clean_hpmsg()
+            if (encounter.momo.hp > 0) {
+                encounter.send_hpmsg()
+                return
+            }
+            // The momo doesn't have any HP left, remove messages, send the weakened message and the image
+            encounter.clean_hpmsg()
+            encounter.clean_msg()
+            message.channel.send(":dizzy: The wild Momo is weakened!")
+            encounter.send_image()
         }
     },
     "momodex": {
         id: 4,
         description: "",
+        permission: dm_only,
         callback: async function (message, content) {
-            // Shows user's current momodes
-            // Only works in DM
+            // Shows user's current momodex
+            let user = new User()
+            await user.load(message.author.id)
+            let total_caught = 0, msg = ""
+            user.momodex.forEach((momo, index)=>{
+                if (momo) {
+                    total_caught += 1
+                    msg += `#${("     " + (index+1)).slice(-3)}. ${momos[index].name}\n` 
+                }
+            })
+            msg = "```" + `MOMODEX - ${total_caught}/${momos.length}\n` + msg + "Type !momodex [number] to see information for the specified Momo.```"
+            message.channel.send(msg)
         }
     },
     "spawnmo": {
@@ -183,6 +486,15 @@ exports.commands = {
         callback: async function (message, content) {
             // For momo help, sends in DM
         }
+    },
+    "momotallgrass": {
+        id: 12,
+        description: "",
+        callback: async function (message, content) {
+            // To say that this channel is a tallgrass channel.
+            tallgrass_channels[message.channel.id] = {pool: generate_momo_pool()}
+            momo_db.updateOne({_id: "tallgrass_channels"}, {$set :{channels: tallgrass_channels}})
+        }
     }
 }
 
@@ -193,7 +505,7 @@ function dm_only (member, message) {
 }
 
 function tallgrass_only (member, message) {
-    if (message.channel.id == global.settings.momomon_tallgrass_channel) return true
+    if (Object.keys(tallgrass_channels).includes(message.channel.id)) return true
     return false
 }
 
@@ -205,18 +517,20 @@ exports.always = async function (message) {
         let user = new User()
         await user.load(message.author.id)
         let prev_lvl = user.level
+        // Ensure the channel list of latest messages exists
+        if (!latest_messages[message.channel.id]) latest_messages[message.channel.id] = [0,0,0,0,0,0,0,0,0,0]
         // Exp amount: 10 - 2*number_of_messages_from_user_in_last_messages
         // /2 if message is one word only (no space)
         // min 0
-        let exp_amount = 10 - latest_messages.reduce( (acc, val) => acc += val == message.author.id ? 2 : 0)
+        let exp_amount = 10 - latest_messages[message.channel.id].reduce( (acc, val) => acc += val == message.author.id ? 2 : 0)
         // Message is in server, add exp
-        if (!latest_messages[message.channel.id]) latest_messages[message.channel.id] = [0,0,0,0,0,0,0,0,0,0]
         latest_messages[message.channel.id].shift()
         latest_messages[message.channel.id].push(message.author.id)
 
         if (message.content.indexOf(" ") == -1) exp_amount /= 2
         if (exp_amount < 0) exp_amount = 0
         user.xp += exp_amount
+        user.peaches += exp_amount * 10
         if (user.level % 5 == 0 && user.level != prev_lvl) {
             let msg
             if (user.level == 10) {
