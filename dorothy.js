@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const ytdl = require('ytdl-core');
 const fs = require("fs");
 
+process.on('unhandledRejection', r => console.log(r))
+
 global.settings = JSON.parse(fs.readFileSync("settings.json"));
 const token = settings.token;
 const client = new Discord.Client({ autoReconnect: true});
@@ -11,6 +13,7 @@ client.on('ready', () => {
 });
 
 global.client = client;
+global.Discord = Discord;
 
 const modules = require("./modules/");
 global.modules = modules;

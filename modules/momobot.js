@@ -86,7 +86,7 @@ class TallgrassEncounter {
         this.try_catch = false
 
         let message = "", hp_message = ""
-        if (random(0, 4) == 0) {
+        if (random(0, 1) == 0) {
             // The momo is angry.
             message = TallgrassEncounter.captions[random(0, TallgrassEncounter.captions.length)]
             this.momo.hp = Math.ceil(this.momo.rarity/7)
@@ -109,11 +109,11 @@ class TallgrassEncounter {
     }
 
     async send_hpmsg() {
-        this.hp_message = this.channel.send("```" + `${this.lifeword}: ${this.momo.hp}` + "```")
+        this.hp_message = await this.channel.send("```" + `${this.lifeword}: ${this.momo.hp}` + "```")
     }
 
     async send_image() {
-        this.message = this.channel.send(fs.readFileSync(this.momo.image))
+        this.message = await this.channel.send({files: [this.momo.image]})
     }
 
     clean() {
@@ -188,6 +188,10 @@ class User {
         } else {
             // User exists, copy it (can't assign user.user to this)
             for (let prop in user.user) this[prop] = user.user[prop]
+            for (let momo in this.momos) {
+                if (!this.momos[momo]) continue
+                this.momos[momo] = Object.assign(new Momo(), this.momos[momo])
+            }
         }
 
     }
@@ -238,7 +242,7 @@ class User {
 }
 
 class Momo {
-    constructor(type) {
+    constructor(type = 0) {
         this.type = type
         this.level = 1
         this.xp = random(0, (momos[type].rarity) * 10)
@@ -382,11 +386,12 @@ exports.commands = {
             // Since we're not entirely sure how many momos the user have, let's make a new array with only those
             // We might have something in 5th cell, but empty cells before
             // @PBUG
-            let usermomos = user.momos.map((m)=>m)
+            let usermomos = user.momos.filter((m)=>m)
             // Chose the fighter
             let fighter = usermomos[random(0, usermomos.length)]
             // Calculate damage
             let damage = Math.ceil(random(0, fighter.power)/encounter.momo.rarity)
+            message.channel.send(`:boom: ${message.author.username}'s ${fighter.name} attacks! ${damage} dealt to the aggressive Momo!`)
             // Do damage
             encounter.momo.hp -= damage
             encounter.clean_hpmsg()
