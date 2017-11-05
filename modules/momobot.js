@@ -582,6 +582,34 @@ Fed ${amount} to Momo #${momo}. ${(m.level-level>0)?`\n${m.name} grew ${m.level-
             exports.commands.squad.callback(message, momo)
         }
     },
+    "swap": {
+        id: 40,
+        description: "",
+        permission: dm_only,
+        callback: async function (message, content) {
+            let [a, b] = content.split(" ").map((n)=>parseInt(n))
+            if (isNaN(a) || isNaN(b)) {
+                message.channel.send("Invalid command, see !squadhelp for format help.")
+                return
+            }
+            if(a < 1 || a > 6 || b < 1 || b > 6) {
+                message.channel.send("Numbers must be between 1 and 6.")
+                return
+            }
+            if (a == b) {
+                message.channel.send("You can't swap that with itself!")
+                return
+            }
+            let user = new User()
+            await user.load(message.author.id)
+            let temp = user.momos[a-1]
+            user.momos[a-1] = user.momos[b-1]
+            user.momos[b-1] = temp
+            await user.save()
+            message.channel.send("```" + `Swapped Momos #${a} and #${b}!` + "```")
+            exports.commands.momosquad.callback(message, "")
+        }
+    },
     "squadhelp": {
         id: 7,
         description: "",
