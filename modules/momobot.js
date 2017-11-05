@@ -60,7 +60,7 @@ function pick_momo(channel) {
 async function momo_encounter(channel) {
     if (!tallgrass_channels[channel.id].encounter) {
         // One chance out of 20 to encounter a momo everytime this function is called
-        if (random(0, 1) == 0) {
+        if (random(0, 20) == 0) {
             console.log("momobot: spawning momo in " + channel.id)
             let encounter = tallgrass_channels[channel.id].encounter = new TallgrassEncounter(channel)
             console.log("momobot: a wild momo appeared: " + encounter.momo.name)
@@ -86,7 +86,7 @@ class TallgrassEncounter {
         this.try_catch = false
 
         let message = "", hp_message = ""
-        if (random(0, 1) == 0) {
+        if (random(0, 4) == 0) {
             // The momo is angry.
             message = TallgrassEncounter.captions[random(0, TallgrassEncounter.captions.length)]
             this.momo.hp = Math.ceil(this.momo.rarity/7)
