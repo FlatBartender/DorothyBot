@@ -507,6 +507,38 @@ HP: ${momo.hp}` + "```", {files: [momo.image]})
 
         }
     },
+    "summon": {
+        id: 20,
+        description: "",
+        permission: dm_only,
+        callback: async function (message, content) {
+            let target = parseInt(content)
+            if (isNaN(target)) {
+                message.channel.send("Invalid input, use the Momo's Momodex number for this command.")
+                return"Summoned a "+momos[target-1].name+" into the squad's X slot using "+cost+" Peaches!```"
+            }
+            if (target < 1 || target > momos.length) {
+                message.channel.send("Invalid number. Must be between 1 and "+momos.length)
+                return
+            }
+            let user = new User()
+            await user.load(message.author.id)
+            if (!user.momodex[target-1]) {
+                message.channel.send("That Momo isn't in your Momodex.")
+                return
+            }
+            let cost = momos[target-1].rarity*10
+            if (cost > user.peaches) {
+                message.channel.send("You don't have enough Peaches!")
+                return
+            }
+            user.peaches -= cost
+            user.momos[5] = new Momo(target-1)
+            message.channel.send("```" + `Summoned a ${momos[target-1].name} into the squad's X slot using ${cost} Peaches!`+ "```")
+            await user.save()
+            exports.commands.momosquad.callback(message, "")
+        }
+    },
     "squadhelp": {
         id: 7,
         description: "",
