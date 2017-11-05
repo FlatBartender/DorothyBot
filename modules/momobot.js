@@ -656,9 +656,32 @@ Fed ${amount} to Momo #${momo}. ${(m.level-level>0)?`\n${m.name} grew ${m.level-
     "momoclass": {
         id: 10,
         description: "",
+        permission: guild_only,
         callback: async function (message, content) {
             // To chose a class
-            // Only in dm
+            let user = new User()
+            await user.load(message.author.id)
+            if (user.level < 10) {
+                message.channel.send("Sorry, you have to be level 10 or higher to choose a class.")
+                return
+            }
+            let guild = await momo_db.findOne({_id: message.channel.guild.id})
+            if (!guild) {
+                message.channel.send("There's no level 10 class in this server yet. Please ask an administrator.")
+                return
+            }
+            // Check if the user has any of the lv10 roles
+            let user_classes = message.member.roles.array().map((r)=>r.id)
+            if (user_classes.some((role, i)=>Object.values(guild.lv10_classes).includes(role))) {
+                message.channel.send("It looks like you already belong to a class, ask an admin for help if necessary.")
+                return
+            }
+            if (!guild.lv10_classes[content]) {
+                message.channel.send("The role you've asked for doesn't exist! Please be careful, it's case-sensitive.")
+                return
+            }
+            message.member.addRole(guild.lv10_classes[content])
+            message.channel.send(`Congratulation ${message.author.username}, you've been promoted to the ${content} class!`)
         }
     },
     "momohelp": {
