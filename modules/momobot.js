@@ -476,6 +476,37 @@ Use !squadhelp for a list of commands
             message.channel.send(msg)
         }
     },
+    "squad": {
+        id: 13,
+        description: "",
+        permission: dm_only,
+        callback: async function (message, content) {
+            let number = parseInt(content)-1
+            if (isNaN(number)) {
+                message.channel.send("Invalid command, see !squadhelp for format help.")
+                return
+            }
+            if (number < 0 || number > 5) {
+                message.channel.send("Invalid slot number.")
+                return
+            }
+            let user = new User()
+            await user.load(message.author.id)
+            let momo = user.momos[number]
+            if (!momo) {
+                message.channel.send("This slot is empty!")
+                return
+            }
+            message.channel.send("```" + `
+Number ${momo.type+1}: ${momo.name}
+${momo.flavor}
+*RARITY*: ${momo.rarity}
+
+[ Lv. ${momo.level} | xp: ${momo.level==99?"MAX LV":`${momo.xp}/${momo.xp_to_next}`}] 
+HP: ${momo.hp}` + "```", {files: [momo.image]})
+
+        }
+    },
     "squadhelp": {
         id: 7,
         description: "",
