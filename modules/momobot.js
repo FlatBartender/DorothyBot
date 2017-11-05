@@ -466,7 +466,7 @@ ${momos[number-1].flavor}
             let user = new User()
             await user.load(message.author.id)
             let msg = "```"+`${message.author.username}'s Momo Squad\n`
-            msg += user.momos.map((m,i)=>(`${(i+1)}) ` + (m?`Lv. ${m.level} ${m.name}`:"--Empty Slot--"))).join("\n") 
+            msg += user.momos.map((m,i)=>(`${i==5?"X":(i+1)}) ` + (m?`Lv. ${m.level} ${m.name}`:"--Empty Slot--"))).join("\n") 
             msg += `
 !! 6th slot will be replaced when a new Momo is added. !!
 Use !squadhelp for a list of commands
