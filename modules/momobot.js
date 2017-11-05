@@ -638,9 +638,19 @@ Fed ${amount} to Momo #${momo}. ${(m.level-level>0)?`\n${m.name} grew ${m.level-
     "momoclasshelp": {
         id: 9,
         description: "",
+        permission: guild_only,
         callback: async function (message, content) {
             // Shows the class summary
-            // Only in DM
+            let guild = await momo_db.findOne({_id: message.channel.guild.id})
+            if (!guild) {
+                message.channel.send("There's no level 10 class in this server yet. Please ask an administrator.")
+                return
+            }
+            let text = "If you're level 10 or higher, use the command !momoclass in the server, along with a class name, to be promoted. Here's a list of available classes:\n```\n"
+            text += Object.keys(guild.lv10_classes).join("\n") + "```"
+            text += "Choosing a class will do nothing but award you with a fancy color for your name in chat. http://puu.sh/sZZPh/d47d0e6fdb.png\n"
+            text += "At level 30, you will be able to create your own custom class with a color of your choosing."
+            message.channel.send(text);
         }
     },
     "momoclass": {
