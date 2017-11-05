@@ -227,11 +227,19 @@ class User {
         return xp
     }
 
+    xp_to_level(level) {
+        // Actually computes the exp amount needed to make the transition from level-1 to level
+        let xp = 90
+        for (let lvl = 1; lvl <= level; lvl++) {
+            xp += lvl * 10
+        }
+        return xp
+    }
+
     get total_exp() {
-        if (this.level == 1) return this.xp
-        let xp = 100
-        for (let lvl = 2; lvl < this.level; lvl++) {
-            xp += xp + lvl*10
+        let xp = 0
+        for (let lvl = 1; lvl <= this.level; lvl++) {
+            xp += this.xp_to_level(lvl)
         }
         return xp + this.xp
     }
