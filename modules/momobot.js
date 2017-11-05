@@ -539,6 +539,49 @@ HP: ${momo.hp}` + "```", {files: [momo.image]})
             exports.commands.momosquad.callback(message, "")
         }
     },
+    "feed": {
+        id: 30,
+        description: "",
+        permission: dm_only,
+        callback: async function (message, content) {
+            let [momo, amount] = content.split(" ").map((n)=>parseInt(n))
+            if (isNaN(momo) || isNaN(amount)) {
+                message.channel.send("Invalid command, see !squadhelp for format help.")
+                return
+            }
+            if (momo < 1 || momo > 5) {
+                message.channel.send("Invalid target number. Must be between 1 and 5.")
+                return
+            }
+            if (momo == 6) {
+                message.channel.send("You can't feed a Momo in the X slot.")
+                return
+            }
+            if (amount <= 0) {
+                message.channel.send("Invalid peach number. Must be 1 or greater.")
+                return
+            }
+            let user = new User()
+            await user.load(message.author.id)
+            if (amount > user.peaches) {
+                message.channel.send("You don't have that many peaches!")
+                return
+            }
+            if (!user.momos[momo-1]) {
+                message.channel.send("This slot is empty!")
+                return
+            }
+            let m = user.momos[momo-1]
+            let level = m.level
+            m.xp += amount
+            user.peaches -= amount
+            await user.save()
+            message.channel.send("```" + `
+Fed ${amount} to Momo #${momo}. ${(m.level-level>0)?`\n${m.name} grew ${m.level-level} level(s)!`:""}
+` + "```")
+            exports.commands.squad.callback(message, momo)
+        }
+    },
     "squadhelp": {
         id: 7,
         description: "",
