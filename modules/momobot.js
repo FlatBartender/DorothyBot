@@ -299,8 +299,7 @@ class Momo {
     }
 
     get xp_to_next() {
-        // @TODO Implement lvl up xp diff
-        let xp
+        let xp = 0
         for (let i = 1; i <= this.level; i++) {
             xp += i
         }
