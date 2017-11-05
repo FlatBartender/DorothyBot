@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const ytdl = require('ytdl-core');
 const fs = require("fs");
 
+process.on('unhandledRejection', r => console.log(r))
+
 global.settings = JSON.parse(fs.readFileSync("settings.json"));
 const token = settings.token;
 const client = new Discord.Client({ autoReconnect: true});
@@ -11,6 +13,14 @@ client.on('ready', () => {
 });
 
 global.client = client;
+global.Discord = Discord;
+
+const auth = require ("./modules/auth")
+
+const default_permission = auth.default_permission;
+global.default_permission = (module, command) => {
+    return default_permission.bind(null, module, command)
+}
 
 const modules = require("./modules/");
 global.modules = modules;
@@ -37,8 +47,6 @@ Object.keys(modules).forEach((module) => {
     // Add modules.always if it exists
     if (m.always) always.push(m.always)
 });
-
-const default_permission = modules.auth.default_permission;
 
 client.on('message', async (message) => {
     // Run always callbacks
@@ -76,8 +84,17 @@ client.on('message', async (message) => {
                 // Check there are command-specific permissions...
                 if (c.permission) {
                     // If there are, check permissions. Throw true if user is authorized, false otherwise.
-                    if (await c.permission(message.member, message)) throw true;
-                    else throw false;
+                    if (c.permission instanceof Array) {
+                        // This is an array of permissions. Every single one must be true for the message to go through.
+                        for (p of c.permission) {
+                            if (!(await p(message.member, message))) throw false
+                        }
+                        throw true
+                    }
+                    else {
+                        if (await c.permission(message.member, message)) throw true;
+                        else throw false;
+                    }
                 }
                 
                 // Check for module-specific permissions...
