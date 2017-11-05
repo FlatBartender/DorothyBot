@@ -684,6 +684,29 @@ Fed ${amount} to Momo #${momo}. ${(m.level-level>0)?`\n${m.name} grew ${m.level-
             message.channel.send(`Congratulation ${message.author.username}, you've been promoted to the ${content} class!`)
         }
     },
+    "addmomoclass": {
+        id: 50,
+        description: "",
+        permission: [global.default_permission(exports.name, "addmomoclass"), guild_only],
+        callback: async function (message, content) {
+            let guild = await momo_db.findOne({_id: message.channel.guild.id})
+            if (!guild) {
+                // No list of lv10 classes have been found.
+                // Create one
+                guild = {_id: message.channel.guild.id, lv10_classes: {}}
+                await momo_db.insertOne(guild)
+            }
+            let [name, id] = content.split(" ")
+            if (!name || !id) {
+                // Content doesn't include the name of the class.
+                message.channel.send("You need to supply the name and the id of the role.")
+                return
+            }
+            guild.lv10_classes[name] = id
+            momo_db.updateOne({_id: message.channel.guild.id}, {$set: {lv10_classes: guild.lv10_classes}})
+            message.channel.send(`Successfully added role ${id} with name ${name} to the list of lvl 10 classes!`)
+        }
+    },
     "momohelp": {
         id: 11,
         description: "",
