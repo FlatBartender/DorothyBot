@@ -722,6 +722,14 @@ Fed ${amount} to Momo #${momo}. ${(m.level-level>0)?`\n${m.name} grew ${m.level-
             tallgrass_channels[message.channel.id] = {pool: generate_momo_pool()}
             momo_db.updateOne({_id: "tallgrass_channels"}, {$set :{channels: tallgrass_channels}})
         }
+    },
+    "listroleids": {
+        id: 60,
+        description: "",
+        permission: [guild_only, global.default_permission(exports.name, "listroleids")],
+        callback: async function (message, content) {
+            message.channel.send("```" + message.channel.guild.roles.map((role)=>`${role.name}: ${role.id}`).join("\n") + "```")
+        }
     }
 }
 
