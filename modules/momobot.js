@@ -308,6 +308,10 @@ class Momo {
     }
 }
 
+Momo.image = function (type) {
+    return `data/Momos/${type+1}.png`
+}
+
 class Pet {
     constructor(type, hp) {
         this.type = type
