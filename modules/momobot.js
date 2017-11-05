@@ -238,7 +238,7 @@ class User {
 
     get total_exp() {
         let xp = 0
-        for (let lvl = 1; lvl <= this.level; lvl++) {
+        for (let lvl = 1; lvl < this.level; lvl++) {
             xp += this.xp_to_level(lvl)
         }
         return xp + this.xp
