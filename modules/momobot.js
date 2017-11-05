@@ -744,6 +744,11 @@ function tallgrass_only (member, message) {
     return false
 }
 
+function guild_only (member, message) {
+    if (message.channel.type == "text") return true
+    return false
+}
+
 exports.always = async function (message) {
     // Add exp if message is not in DM
     if (message.channel.type == "dm") {
