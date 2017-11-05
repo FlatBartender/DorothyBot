@@ -450,8 +450,19 @@ ${momos[number-1].flavor}
                     msg += `#${("     " + (index+1)).slice(-3)}. ${momos[index].name}\n` 
                 }
             })
-            msg = "```" + `MOMODEX - ${total_caught}/${momos.length}\n` + msg + "Type !momodex [number] to see information for the specified Momo.```"
-            message.channel.send(msg)
+            full_msg = `MOMODEX - ${total_caught}/${momos.length}\n` + msg + "Type !momodex [number] to see information for the specified Momo."
+            // We need to chop the message down to smaller pieces so that discord can send it.
+            // Generic solution because at some point there might be more momos.
+            let msgs = [], lines = full_msg.split("\n")
+            while (lines.length > 0) {
+                let current_msg = ""
+                while (current_msg.length < 1900 && lines.length > 0) {
+                    current_msg += "\n" + lines.shift()
+                }
+                msgs.push(current_msg)
+            }
+
+            msgs.forEach((msg)=>message.channel.send("```" + msg + "```"))
         }
     },
     "spawnmo": {
