@@ -290,6 +290,10 @@ class Momo {
         return momos[this.type].rarity
     }
 
+    get flavor() {
+        return momos[this.type].flavor
+    }
+
     get name() {
         return momos[this.type].name
     }
