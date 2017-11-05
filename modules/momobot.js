@@ -220,8 +220,8 @@ class User {
     }
 
     get xp_to_next() {
-        let xp = 100
-        for (let lvl = 1; lvl < this.level; lvl++) {
+        let xp = 90
+        for (let lvl = 1; lvl <= this.level; lvl++) {
             xp += lvl * 10
         }
         return xp
