@@ -1,0 +1,752 @@
+[
+    {
+        "name":"Momo",
+        "rarity":1,
+        "flavor":"Just regular Momo."
+    },
+    {
+        "name":"Clumsy Momo",
+        "rarity":10,
+        "flavor":"Whoops!"
+    },
+    {
+        "name":"Angry Momo",
+        "rarity":8,
+        "flavor":"Watch out, she's mad!"
+    },
+    {
+        "name":"Happy Momo",
+        "rarity":6,
+        "flavor":"Hooray!"
+    },
+    {
+        "name":"Relaxed Momo",
+        "rarity":12,
+        "flavor":"Take it easy..."
+    },
+    {
+        "name":"Laid-Back Momo",
+        "rarity":16,
+        "flavor":"Not a care in the world."
+    },
+    {
+        "name":"Dead Momo",
+        "rarity":32,
+        "flavor":"Uh oh, something smells..."
+    },
+    {
+        "name":"Nurse Momo",
+        "rarity":78,
+        "flavor":"Hold still, it'll only hurt for a second... Probably..."
+    },
+    {
+        "name":"Tsundere Momo",
+        "rarity":28,
+        "flavor":"B-baka..."
+    },
+    {
+        "name":"Crying Momo",
+        "rarity":18,
+        "flavor":"Probably stubbed her toe."
+    },
+    {
+        "name":"Scribble Momo",
+        "rarity":25,
+        "flavor":"Could YOU draw better?"
+    },
+    {
+        "name":"Maid Momo",
+        "rarity":80,
+        "flavor":"Welcome home, master."
+    },
+    {
+        "name":"Winter Momo",
+        "rarity":28,
+        "flavor":"All bundled up against the cold."
+    },
+    {
+        "name":"Summer Momo",
+        "rarity":32,
+        "flavor":"Perfect weather for a walk in the sun."
+    },
+    {
+        "name":"Halloween Momo",
+        "rarity":52,
+        "flavor":"Probably not a real demon."
+    },
+    {
+        "name":"Christmas Momo",
+        "rarity":55,
+        "flavor":"Presents for all the good boys and girls!"
+    },
+    {
+        "name":"Blonde Momo",
+        "rarity":15,
+        "flavor":"Is it bleached or natural?"
+    },
+    {
+        "name":"Hime-Cut Momo",
+        "rarity":16,
+        "flavor":"Straight and clean."
+    },
+    {
+        "name":"Long Hair Momo",
+        "rarity":21,
+        "flavor":"Gorgeous flowing locks."
+    },
+    {
+        "name":"Miko Momo",
+        "rarity":63,
+        "flavor":"Holy and pure."
+    },
+    {
+        "name":"Super Momo",
+        "rarity":31,
+        "flavor":"HAAAAAAAAAAAAAAAA...!"
+    },
+    {
+        "name":"Blue Momo",
+        "rarity":21,
+        "flavor":"Tastes like blueberries."
+    },
+    {
+        "name":"Red Momo",
+        "rarity":22,
+        "flavor":"Tastes like apples."
+    },
+    {
+        "name":"Yellow Momo",
+        "rarity":23,
+        "flavor":"Tastes like lemons."
+    },
+    {
+        "name":"Sphere Momo",
+        "rarity":32,
+        "flavor":"Behold... the MOMORB!"
+    },
+    {
+        "name":"Mom Momo",
+        "rarity":55,
+        "flavor":"But who is the father?"
+    },
+    {
+        "name":"Bakman Momo",
+        "rarity":23,
+        "flavor":"It's probably not healthy for hair to be growing out of an eyeball."
+    },
+    {
+        "name":"White Dress Momo",
+        "rarity":26,
+        "flavor":"White as snow."
+    },
+    {
+        "name":"Black Dress Momo",
+        "rarity":27,
+        "flavor":"Black as soot."
+    },
+    {
+        "name":"Police Momo",
+        "rarity":71,
+        "flavor":"You're under arrest for crimes against leaves!"
+    },
+    {
+        "name":"Shadow Momo",
+        "rarity":40,
+        "flavor":"A shade of Momo's true self."
+    },
+    {
+        "name":"On Fire Momo",
+        "rarity":30,
+        "flavor":"STOP DROP AND ROLL! STOP DROP AND ROLL!!"
+    },
+    {
+        "name":"Silver Momo",
+        "rarity":50,
+        "flavor":"Impressive, but completely average."
+    },
+    {
+        "name":"Red Plumber Momo",
+        "rarity":50,
+        "flavor":"It's a me, Momo!"
+    },
+    {
+        "name":"Green Plumber Momo",
+        "rarity":52,
+        "flavor":"I'mma Momo, number one!"
+    },
+    {
+        "name":"Actual Plumber Momo",
+        "rarity":59,
+        "flavor":"Coins? Mushrooms? No thanks."
+    },
+    {
+        "name":"Twintails Momo",
+        "rarity":49,
+        "flavor":"The real classic Momo look."
+    },
+    {
+        "name":"momo.exe",
+        "rarity":91,
+        "flavor":"Hello, User! I am this server's resident entertainment bot. Send me a DM with the command !momohelp to see a list of my features."
+    },
+    {
+        "name":"Frozen Momo",
+        "rarity":41,
+        "flavor":"Free her!"
+    },
+    {
+        "name":"Spider Momo",
+        "rarity":66,
+        "flavor":"Spider Momo"
+    },
+    {
+        "name":"Fire Momo",
+        "rarity":60,
+        "flavor":"..But everything changed when the Fire Momo attacked..."
+    },
+    {
+        "name":"Water Momo",
+        "rarity":62,
+        "flavor":"Highly effective against Fire Momo."
+    },
+    {
+        "name":"Earth Momo",
+        "rarity":63,
+        "flavor":"Might just be regular Momo throwing dirt."
+    },
+    {
+        "name":"Air Momo",
+        "rarity":61,
+        "flavor":"Wind powers are not as useful as you might think."
+    },
+    {
+        "name":"Ice Momo",
+        "rarity":65,
+        "flavor":"No relation to Water Momo"
+    },
+    {
+        "name":"Lightning Momo",
+        "rarity":66,
+        "flavor":"Zap! ZAP!!"
+    },
+    {
+        "name":"Neko Momo",
+        "rarity":70,
+        "flavor":"Momo-chan, so kawaii..."
+    },
+    {
+        "name":"Furry Momo",
+        "rarity":55,
+        "flavor":"Only one step up from a catgirl."
+    },
+    {
+        "name":"Bride Momo",
+        "rarity":90,
+        "flavor":"Is Momo YOUR waifu?"
+    },
+    {
+        "name":"Witch Momo",
+        "rarity":33,
+        "flavor":"Master of spells and magic concoctions."
+    },
+    {
+        "name":"Cosplay Momo",
+        "rarity":65,
+        "flavor":"From some game about collectable creatures... lame."
+    },
+    {
+        "name":"Star Warrior Momo",
+        "rarity":72,
+        "flavor":"Hopefully not going to eat you."
+    },
+    {
+        "name":"Reverse-Trim Momo",
+        "rarity":5,
+        "flavor":"Just a different outfit."
+    },
+    {
+        "name":"Blue Trim Momo",
+        "rarity":7,
+        "flavor":"Player two."
+    },
+    {
+        "name":"Inverted Momo",
+        "rarity":20,
+        "flavor":"Woah, that's weird..."
+    },
+    {
+        "name":"No Ahoge Momo",
+        "rarity":11,
+        "flavor":"Missing something extremely vital..."
+    },
+    {
+        "name":"Big Ahoge Momo",
+        "rarity":22,
+        "flavor":"The bigger the ahoge, the stronger the girl."
+    },
+    {
+        "name":"Extreme Ahoge Momo",
+        "rarity":44,
+        "flavor":"At this size, it's easy to mistake for a ponytail."
+    },
+    {
+        "name":"Only Ahoge Momo",
+        "rarity":88,
+        "flavor":"Something has gone terribly wrong."
+    },
+    {
+        "name":"Hot Springs Momo",
+        "rarity":85,
+        "flavor":"Obligatory hot springs episode."
+    },
+    {
+        "name":"Paper Momo",
+        "rarity":35,
+        "flavor":"Ready for a delightful RPG adventure."
+    },
+    {
+        "name":"Outlined Momo",
+        "rarity":29,
+        "flavor":"Very distinct."
+    },
+    {
+        "name":"Big Eyed Momo",
+        "rarity":40,
+        "flavor":"SUGOII!"
+    },
+    {
+        "name":"Ninja Momo",
+        "rarity":64,
+        "flavor":"No actual training, she just thinks the scarf looks cool."
+    },
+    {
+        "name":"Snowmo",
+        "rarity":51,
+        "flavor":"Can't have winter without snowmen."
+    },
+    {
+        "name":"Dora Momo",
+        "rarity":75,
+        "flavor":"Not to be confused with Momodora, or regular Dora."
+    },
+    {
+        "name":"Kaho Momo",
+        "rarity":75,
+        "flavor":"Honoring her ancestor."
+    },
+    {
+        "name":"Sword Momo",
+        "rarity":41,
+        "flavor":"Watch out, she's got a really big knife!"
+    },
+    {
+        "name":"Shield Momo",
+        "rarity":39,
+        "flavor":"The best offense is a good defense."
+    },
+    {
+        "name":"Hero Momo",
+        "rarity":62,
+        "flavor":"Fights for honor and justice!"
+    },
+    {
+        "name":"Momobile",
+        "rarity":45,
+        "flavor":"Beep beep!"
+    },
+    {
+        "name":"Developer Momo",
+        "rarity":90,
+        "flavor":"Hey, wait a second..."
+    },
+    {
+        "name":"Long Dress Momo",
+        "rarity":12,
+        "flavor":"Cute and stylish."
+    },
+    {
+        "name":"Ascending Momo",
+        "rarity":65,
+        "flavor":"Don't go into the light...!"
+    },
+    {
+        "name":"Alien Momo",
+        "rarity":50,
+        "flavor":"Take her to your leader."
+    },
+    {
+        "name":"Fish Momo",
+        "rarity":40,
+        "flavor":"Blub."
+    },
+    {
+        "name":"Cat Momo",
+        "rarity":45,
+        "flavor":"Might just be a regular cat."
+    },
+    {
+        "name":"Bunny Momo",
+        "rarity":40,
+        "flavor":"Actually doesn't really like carrots"
+    },
+    {
+        "name":"Mirror Momo",
+        "rarity":20,
+        "flavor":"Different from regular Momo in every way."
+    },
+    {
+        "name":"Suspicious Momo",
+        "rarity":25,
+        "flavor":"Something seems a little off..."
+    },
+    {
+        "name":"Momo?",
+        "rarity":55,
+        "flavor":"Ditto Ditto? Di~tto!"
+    },
+    {
+        "name":"Pikmomo",
+        "rarity":65,
+        "flavor":"Tastes just like a carrot."
+    },
+    {
+        "name":"RIP Momo",
+        "rarity":45,
+        "flavor":"Here lies Momo Reinol."
+    },
+    {
+        "name":"Zombie Momo",
+        "rarity":44,
+        "flavor":"Braaains..."
+    },
+    {
+        "name":"Skeleton Momo",
+        "rarity":49,
+        "flavor":"SPOOKY!"
+    },
+    {
+        "name":"Ghost Momo",
+        "rarity":45,
+        "flavor":"That's not a sheet. Stop tugging."
+    },
+    {
+        "name":"Slime Momo",
+        "rarity":55,
+        "flavor":"Probably someone's fetish. Gross."
+    },
+    {
+        "name":"Mermomo",
+        "rarity":65,
+        "flavor":"An advanced form of Fish Momo."
+    },
+    {
+        "name":"One-Piece Momo",
+        "rarity":88,
+        "flavor":"Ready for the beach!"
+    },
+    {
+        "name":"Sporty Momo",
+        "rarity":25,
+        "flavor":"Woo, sportball!"
+    },
+    {
+        "name":"Bikini Momo",
+        "rarity":94,
+        "flavor":"Obligitory fanservice."
+    },
+    {
+        "name":"Rainy Day Momo",
+        "rarity":25,
+        "flavor":"Will jump in ALL the puddles."
+    },
+    {
+        "name":"Schoolgirl Momo",
+        "rarity":75,
+        "flavor":"When will senpai notice her?"
+    },
+    {
+        "name":"Megane Momo",
+        "rarity":38,
+        "flavor":"Glasses are a charm point."
+    },
+    {
+        "name":"Momo Momo",
+        "rarity":70,
+        "flavor":"Momo means peach. She is literally a peach."
+    },
+    {
+        "name":"Legendary Momo",
+        "rarity":70,
+        "flavor":"The Hero of Time, The Waker of Winds, The-- no?"
+    },
+    {
+        "name":"Golden Momo",
+        "rarity":100,
+        "flavor":"She is highly valuable, but almost immobile."
+    },
+    {
+        "name":"Blocky Momo",
+        "rarity":30,
+        "flavor":"Ew, is this what passes off for retro these days?"
+    },
+    {
+        "name":"Low Res Momo",
+        "rarity":40,
+        "flavor":"You can practically feel the pixels."
+    },
+    {
+        "name":"Old Momo",
+        "rarity":35,
+        "flavor":"Back in my day, we used LEAVES instead of swords..."
+    },
+    {
+        "name":"Dora",
+        "rarity":1,
+        "flavor":"Originally called 'Tsundere Dora' but the two are synonymous."
+    },
+    {
+        "name":"Stinky Dora",
+        "rarity":18,
+        "flavor":"Woah, what has this Dora been rolling in?"
+    },
+    {
+        "name":"Fedora Dora",
+        "rarity":34,
+        "flavor":"M'modora..."
+    },
+    {
+        "name":"Sleeping Dora",
+        "rarity":56,
+        "flavor":"Do Not Disturb."
+    },
+    {
+        "name":"Pajama Dora",
+        "rarity":67,
+        "flavor":"All ready for the sleeps."
+    },
+    {
+        "name":"Jelly Donut Dora",
+        "rarity":48,
+        "flavor":"Something was lost in translation."
+    },
+    {
+        "name":"Statue Dora",
+        "rarity":51,
+        "flavor":"A grand tribute to Momodora's most tsundere heroine."
+    },
+    {
+        "name":"Dirt Dora",
+        "rarity":6,
+        "flavor":"Common and cheap as as... dirt."
+    },
+    {
+        "name":"Momo Dora",
+        "rarity":76,
+        "flavor":"No relation to the game series of the same name. Okay, there is SOME relation."
+    },
+    {
+        "name":"Bush Dora",
+        "rarity":32,
+        "flavor":"Leaf me alone, b-baka..."
+    },
+    {
+        "name":"Smug Dora",
+        "rarity":44,
+        "flavor":"You played Momodora 3 on Easy Mode? Wow..."
+    },
+    {
+        "name":"Smaug Dora",
+        "rarity":66,
+        "flavor":"Don't touch her treasure hoard."
+    },
+    {
+        "name":"Smog Dora",
+        "rarity":55,
+        "flavor":"There are a variety of reasons you shouldn't breathe this in."
+    },
+    {
+        "name":"Headless Dora",
+        "rarity":32,
+        "flavor":"Somehow still alive?"
+    },
+    {
+        "name":"Head Dora",
+        "rarity":23,
+        "flavor":"Aint got no body for lovin'."
+    },
+    {
+        "name":"No Ribbon Dora",
+        "rarity":21,
+        "flavor":"Practically not even dora at this point."
+    },
+    {
+        "name":"Big Ribbon Dora",
+        "rarity":42,
+        "flavor":"Twice the ribbon, twice the power."
+    },
+    {
+        "name":"Nurse Dora",
+        "rarity":78,
+        "flavor":"It's not like I want to help you get better or anything..."
+    },
+    {
+        "name":"Maid Dora",
+        "rarity":80,
+        "flavor":"Welcome home, shall I prepare the tea?"
+    },
+    {
+        "name":"Bikini Dora",
+        "rarity":94,
+        "flavor":"There are a number of known constants in the universe, and fanservice is one of them."
+    },
+    {
+        "name":"Hot Springs Dora",
+        "rarity":85,
+        "flavor":"No peeking, jerk!"
+    },
+    {
+        "name":"Mondays Dora",
+        "rarity":34,
+        "flavor":"Don't even talk to her before she's had her coffee."
+    },
+    {
+        "name":"Nacho Cheese Dora",
+        "rarity":69,
+        "flavor":"Ready to own some scrubs."
+    },
+    {
+        "name":"Cool Ranch Dora",
+        "rarity":69,
+        "flavor":"Fuel for gamers the world over."
+    },
+    {
+        "name":"Old West Dora",
+        "rarity":72,
+        "flavor":"Howdy, pardner."
+    },
+    {
+        "name":"Dark Mage Dora",
+        "rarity":51,
+        "flavor":"Master of offensive spellcasting. So rude."
+    },
+    {
+        "name":"Light Mage Dora",
+        "rarity":49,
+        "flavor":"Probably not going to heal you for free."
+    },
+    {
+        "name":"Rabbit Dora",
+        "rarity":45,
+        "flavor":"Many things in this Dora's life changed when she discovered she was a werebunny."
+    },
+    {
+        "name":"Cube Dora",
+        "rarity":32,
+        "flavor":"Witness the power of six flat faces combined!"
+    },
+    {
+        "name":"Ahoge Dora",
+        "rarity":14,
+        "flavor":"Trading the strength of the ribbon for the power of the ahoge, an interesting decision."
+    },
+    {
+        "name":"Possessed Dora",
+        "rarity":70,
+        "flavor":"If you didn't bring a green leaf, you're in for a heck of a fight."
+    },
+    {
+        "name":"Katana Dora",
+        "rarity":20,
+        "flavor":"Glorious Nippon steel, folded 500 times, can cut through anything!!"
+    },
+    {
+        "name":"Punished 'Venom' Dora",
+        "rarity":43,
+        "flavor":"She's been through some serious stuff."
+    },
+    {
+        "name":"Robot Dora",
+        "rarity":25,
+        "flavor":"Beep boop."
+    },
+    {
+        "name":"Gun Dora",
+        "rarity":25,
+        "flavor":"Dora... With A Gun."
+    },
+    {
+        "name":"Gun Dora!",
+        "rarity":50,
+        "flavor":"Hey... put that gun down..."
+    },
+    {
+        "name":"GUN DORA!!",
+        "rarity":75,
+        "flavor":"OH GOD, RUN"
+    },
+    {
+        "name":"Doro",
+        "rarity":24,
+        "flavor":"my naembs doro i fight the bad guys and defeet every enemie"
+    },
+    {
+        "name":"Dinosaur Dora",
+        "rarity":64,
+        "flavor":"Or is it a dragon? Neither?"
+    },
+    {
+        "name":"Bounty Hunter Dora",
+        "rarity":70,
+        "flavor":"Why can't Momodora crawl?"
+    },
+    {
+        "name":"Golden Dora",
+        "rarity":100,
+        "flavor":"Congratulations, you found her. Do you want a medal?"
+    },
+    {
+        "name":"Silver Dora",
+        "rarity":50,
+        "flavor":"Second place. Completely mediocre."
+    },
+    {
+        "name":"Adorable Dora",
+        "rarity":16,
+        "flavor":"Simply aDORAble!"
+    },
+    {
+        "name":"Dad Dora",
+        "rarity":55,
+        "flavor":"Now, how on earth did this happen?"
+    },
+    {
+        "name":"Festive Dora",
+        "rarity":25,
+        "flavor":"Hooray. Party time."
+    },
+    {
+        "name":"Digbuild Dora",
+        "rarity":54,
+        "flavor":"Based on the little known obscure indie game."
+    },
+    {
+        "name":"Flowery Dora",
+        "rarity":67,
+        "flavor":"Who got her to put THAT outfit on?"
+    },
+    {
+        "name":"Queen Dora",
+        "rarity":13,
+        "flavor":"Yeah it's just a crown, got a problem with that? Then leave the kingdom."
+    },
+    {
+        "name":"Explorer Dora",
+        "rarity":40,
+        "flavor":"Come on, vamonos, everybody let's go!"
+    },
+    {
+        "name":"Mushroom Dora",
+        "rarity":35,
+        "flavor":"Absolutely not safe to eat."
+    }
+]
