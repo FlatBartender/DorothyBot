@@ -418,6 +418,20 @@ exports.commands = {
             // Shows user's current momodex
             let user = new User()
             await user.load(message.author.id)
+            let number = parseInt(content)
+            // Check if the user supplied a number
+            if (!isNaN(number)) {
+                // They did
+                // Check if the user has that momo in their momodex, return if they don't
+                if (!user.momodex[number-1]) return
+                // Output info on that specific momo
+                message.channel.send("```" + `
+Number ${number}: ${momos[number-1].name}
+${momos[number-1].flavor}
+*RARITY*: ${momos[number-1].rarity}
+` + "```", {files: [Momo.image(number-1)]})
+                return
+            }
             let total_caught = 0, msg = ""
             user.momodex.forEach((momo, index)=>{
                 if (momo) {
