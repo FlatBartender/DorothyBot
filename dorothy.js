@@ -8,6 +8,14 @@ global.settings = JSON.parse(fs.readFileSync("settings.json"));
 const token = settings.token;
 const client = new Discord.Client({ autoReconnect: true});
 
+// Some log functionalities
+const log_file = fs.createWriteStream(settings.log_file, {flags: "a"});
+global.log = function (module, message) {
+    let str = `[${Date.now().toString()}] DOROTHY/${module}: ${message}`;
+    console.log(str);
+    log_file.write(str + "\n");
+}
+
 client.on('ready', () => {
     console.log('NOBODY EXPECTS THE DOROTHINQUISITION!');
 });
@@ -48,13 +56,6 @@ Object.keys(modules).forEach((module) => {
     if (m.always) always.push(m.always)
 });
 
-// Some log functionalities
-const log_file = fs.createWriteStream(settings.log_file, {flags: "a"});
-global.log = function (module, message) {
-    let str = `[${Date.now()}] MOMOBOT/${module}: ${message}`;
-    console.log(str);
-    log_file.write(str + "\n");
-}
 
 client.on('message', async (message) => {
     // Run always callbacks
