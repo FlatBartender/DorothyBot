@@ -18,7 +18,7 @@ mongo.connect(global.settings.mongo_url, async function (err, connection) {
     }
     // Every 30 seconds, check and try to spawn momos in each server
     setInterval(function () {
-        console.log("momobot: Trying to spawn momos...")
+        log("Trying to spawn momos...")
         for (let cid in tallgrass_channels) {
             let channel = global.client.channels.get(cid)
             if (!channel) continue
@@ -26,6 +26,7 @@ mongo.connect(global.settings.mongo_url, async function (err, connection) {
         }
     }, 30000)
 })
+
 
 function random(min, max)
 {
@@ -61,9 +62,9 @@ async function momo_encounter(channel) {
     if (!tallgrass_channels[channel.id].encounter) {
         // One chance out of 20 to encounter a momo everytime this function is called
         if (random(0, 20) == 0) {
-            console.log("momobot: spawning momo in " + channel.id)
+            log("spawning momo in " + channel.id)
             let encounter = tallgrass_channels[channel.id].encounter = new TallgrassEncounter(channel)
-            console.log("momobot: a wild momo appeared: " + encounter.momo.name)
+            log("a wild momo appeared: " + encounter.momo.name)
             setTimeout(function () {
                 if (tallgrass_channels[channel.id].encounter) {
                     encounter.clean()
@@ -333,6 +334,8 @@ class Pet {
 exports.id = 9000
 exports.name = "momobot"
 
+const log = global.log.bind(undefined, exports.name)
+
 exports.commands = {
     "eventmomo": {
         id: 1,
@@ -369,7 +372,7 @@ exports.commands = {
             user.momos[5] = new Momo(encounter.momo.type)
             user.momodex[encounter.momo.type] = true
             channel.send(`:gift: Gotcha! ${message.author.username} caught a ${encounter.momo.name}! There's ${encounter.amount} left.`)
-            console.log(`momobot: ${message.author.username} (${message.author.id}) caught ${encounter.momo} in channel ${message.channel.id}`)
+            log(`${message.author.username} (${message.author.id}) caught ${encounter.momo} in channel ${message.channel.id}`)
             if (encounter.amount == 0) {
                 message.channel.send(":floppy_disk: All of the "+encounter.momo.name+"s were caught. Data was saved to the !momodex.\n:exclamation: Don't forget to !swap it into your !momosquad if you want to keep it!")
                 encounter.clean()
