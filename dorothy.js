@@ -48,6 +48,14 @@ Object.keys(modules).forEach((module) => {
     if (m.always) always.push(m.always)
 });
 
+// Some log functionalities
+const log_file = fs.createWriteStream(settings.log_file, {flags: "a"});
+global.log = function (module, message) {
+    let str = `[${Date.now()}] MOMOBOT/${module}: ${message}`;
+    console.log(str);
+    log_file.write(str + "\n");
+}
+
 client.on('message', async (message) => {
     // Run always callbacks
     try {
