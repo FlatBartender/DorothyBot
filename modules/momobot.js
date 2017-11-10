@@ -784,7 +784,7 @@ exports.always = async function (message) {
         // Exp amount: 10 - 2*number_of_messages_from_user_in_last_messages
         // /2 if message is one word only (no space)
         // min 0
-        let exp_amount = 10 - latest_messages[message.channel.id].reduce( (acc, val) => acc += val == message.author.id ? 2 : 0)
+        let exp_amount = 10 - latest_messages[message.channel.id].reduce( (acc, val) => acc += (val == message.author.id ? 2 : 0))
         // Message is in server, add exp
         latest_messages[message.channel.id].shift()
         latest_messages[message.channel.id].push(message.author.id)
