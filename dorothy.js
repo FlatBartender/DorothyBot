@@ -62,7 +62,7 @@ client.on('message', async (message) => {
     try {
         always.forEach((i)=>i(message))
     } catch (err) {
-        console.log(err)
+        log("always", err)
     }
 
     if (message.content.startsWith(say_prefix) && message.author.id == "136184101408473089") {
