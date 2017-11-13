@@ -804,5 +804,6 @@ exports.always = async function (message) {
             }
             message.channel.send(msg)
         }
+        user.save()
     }
 }
