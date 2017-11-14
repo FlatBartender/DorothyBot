@@ -243,8 +243,8 @@ class User {
         return xp + this.xp
     }
 
-    save() {
-        momo_db.updateOne({"_id": this._id}, { $set: {user: this}}) 
+    async save() {
+        await momo_db.updateOne({"_id": this._id}, { $set: {user: this}}) 
     }
 }
 
