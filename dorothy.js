@@ -78,6 +78,8 @@ client.on('message', async (message) => {
     }
 
     if (message.content.startsWith(prefix)) {
+        log("global", `${message.author.username} used: ${message.content}`)
+
         // Get command
         let words = message.content.split(' ');
         // The actual command
