@@ -11,7 +11,7 @@ const client = new Discord.Client({ autoReconnect: true});
 // Some log functionalities
 const log_file = fs.createWriteStream(settings.log_file, {flags: "a"});
 global.log = function (module, message) {
-    let str = `[${Date.now().toString()}] DOROTHY/${module}: ${message}`;
+    let str = `[${new Date().toUTCString()}] DOROTHY/${module}: ${message}`;
     console.log(str);
     log_file.write(str + "\n");
 }
