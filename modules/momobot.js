@@ -18,7 +18,6 @@ mongo.connect(global.settings.mongo_url, async function (err, connection) {
     }
     // Every 30 seconds, check and try to spawn momos in each server
     setInterval(function () {
-        log("Trying to spawn momos...")
         for (let cid in tallgrass_channels) {
             let channel = global.client.channels.get(cid)
             if (!channel) continue
@@ -62,9 +61,8 @@ async function momo_encounter(channel) {
     if (!tallgrass_channels[channel.id].encounter) {
         // One chance out of 20 to encounter a momo everytime this function is called
         if (random(0, 20) == 0) {
-            log("spawning momo in " + channel.id)
             let encounter = tallgrass_channels[channel.id].encounter = new TallgrassEncounter(channel)
-            log("a wild momo appeared: " + encounter.momo.name)
+            log(`Spawning momo ${encounter.momo.name} in channel ${channel.name} (${channel.guild.name}) with ${encounter.momo.hp} HPs.`)
             setTimeout(function () {
                 if (tallgrass_channels[channel.id].encounter) {
                     encounter.clean()
@@ -789,10 +787,12 @@ exports.always = async function (message) {
         latest_messages[message.channel.id].shift()
         latest_messages[message.channel.id].push(message.author.id)
 
+
         if (message.content.indexOf(" ") == -1) exp_amount /= 2
         if (exp_amount < 0) exp_amount = 0
         user.xp += exp_amount
         user.peaches += exp_amount * 10
+        if (exp_amount > 0) log(`Gave ${exp_amount} exp to ${message.author.username}`)
         if (user.level % 5 == 0 && user.level != prev_lvl) {
             let msg
             if (user.level == 10) {
