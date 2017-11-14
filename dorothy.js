@@ -33,8 +33,8 @@ global.default_permission = (module, command) => {
 const modules = require("./modules/");
 global.modules = modules;
 
-const prefix = "d!";
-const say_prefix = "d%";
+const prefix = settings.prefix;
+const say_prefix = settings.say_prefix;
 
 // Prepare the global command object for easy permission management and faster reaction.
 const commands = {};
