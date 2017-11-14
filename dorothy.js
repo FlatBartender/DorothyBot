@@ -121,12 +121,11 @@ client.on('message', async (message) => {
                 }
             } catch (auth) {
                 try {
-                    console.log(auth);
                     if (auth instanceof Error) throw auth;
                     if (auth) commands[command].callback(message, content);
                     else message.reply("you can't do this...");
                 } catch (err) {
-                    console.log(err);
+                    log("global", err);
                 }
             }
         }
