@@ -331,6 +331,7 @@ class Pet {
 
 exports.id = 9000
 exports.name = "momobot"
+exports.not_default = true
 
 const log = global.log.bind(undefined, exports.name)
 
