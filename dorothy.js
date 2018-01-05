@@ -50,7 +50,7 @@ Object.keys(modules).forEach((module) => {
          (m.not_default && ( settings.include && !(settings.include.includes(m.name) || settings.include.includes(m.id)))) ) {
         // Don't load the module if it's in the exclude list or it's not a default module AND it's not in the include lists
         log("global", `${m.name} won't be loaded`)
-        return;
+        return
     }
     log("global", `Loading ${m.name}...`)
     Object.keys(m.commands).forEach((command) => {
