@@ -30,7 +30,11 @@ global.default_permission = (module, command) => {
     return default_permission.bind(null, module, command)
 }
 
-const modules = require("./modules/").filter( (m) => {
+const modules_found = require("./modules/")
+global.modules = {}
+
+Object.keys(modules_found).forEach( (m_name) => {
+    let m = modules_found[m_name]
     if ((settings.exclude &&
             (settings.exclude.includes(m.name) || 
              settings.exclude.includes(m.id))) ||
@@ -41,13 +45,11 @@ const modules = require("./modules/").filter( (m) => {
         (m.not_default && !settings.include)) {
         // Don't load the module if it's in the exclude list or it's not a default module AND it's not in the include lists
         log("global", `${m.name} won't be loaded`)
-        return false;
+        return;
     }
     log("global", `Loading ${m.name}...`)
-    return true;
+    global.modules[m_name] = m
 })
-global.modules = modules;
-
 
 const prefix = settings.prefix;
 const say_prefix = settings.say_prefix;
@@ -62,7 +64,6 @@ const always = [];
 
 Object.keys(modules).forEach((module) => {
     let m = modules[module];
-    log("global", `Loading ${m.name}...`)
     Object.keys(m.commands).forEach((command) => {
         // Put the command in the object
         commands[command] = m.commands[command];
