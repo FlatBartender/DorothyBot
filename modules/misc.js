@@ -14,20 +14,20 @@ exports.commands = {
         description: "I help you find all the commands you need!",
         callback: async function (message) {
             message.reply("I'm sending you the commands in DM!");
-            let help_lines = [];
-            help_lines.push("```");
+            let help_messages = []
             Object.keys(global.modules).forEach((m) => {
                 let module = global.modules[m];
+                let help_lines = []
                 help_lines.push(`Module "${module.name}": ${module.description}`);
                 Object.keys(module.commands).forEach((key) => {
                     help_lines.push(`\t"${key}": ${module.commands[key].description}`);
                 });
+                help_messages.push(help_lines.join("\n"))
             });
 
-            help_lines.push("If you have any bug report or feature request, please send me an email at flat.bartender@gensokyo.eu!");
-            help_lines.push("```");
+            help_messages.push("If you have any bug report or feature request, please send me an email at flat.bartender@gmail.com!");
             let chan = await message.member.createDM();
-            chan.send(help_lines.join("\n"));
+            for (let m of help_messages) chan.send("```" + m + "```");
         }
     }
 };
