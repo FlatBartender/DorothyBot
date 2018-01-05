@@ -1,5 +1,3 @@
-const ytdl = require('ytdl-core');
-
 exports.id = 2000;
 exports.commands = {
     "ping": {
