@@ -25,7 +25,7 @@ exports.commands = {
                 help_messages.push(help_lines)
             });
 
-            help_messages.push("If you have any bug report or feature request, please send me an email at flat.bartender@gmail.com!");
+            help_messages.push(["If you have any bug report or feature request, please send me an email at flat.bartender@gmail.com!"]);
             let chan = await message.member.createDM();
             for (let m of help_messages) chan.send("```" + m.join("\n") + "```");
         }
