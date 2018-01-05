@@ -28,6 +28,11 @@ const always = [];
 
 Object.keys(modules).forEach((module) => {
     let m = modules[module];
+    if ( (settings.exclude && (settings.exclude.includes(m.name) || settings.exclude.includes(m.id)))   ||
+         (m.not_default && ( settings.include && !(settings.include.includes(m.name) || settings.include.includes(m.id)))) ) {
+        // Don't load the module if it's in the exclude list or it's not a default module AND it's not in the include lists
+        return;
+    }
     Object.keys(m.commands).forEach((command) => {
         // Put the command in the object
         commands[command] = m.commands[command];
