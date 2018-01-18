@@ -96,13 +96,14 @@ exports.permission = function (command, member) {
 };
 
 if (!global.permissions) global.permissions = {}
+if (!global.permissions.module) global.permissions.module = {}
 
-global.permissions.guild_only = function (member, message) {
+global.permissions.module.guild_only = function (command, member, message) {
     if (message.channel.type == "text") return true
     return false
 }
 
-global.permissions.dm_only = function (member, message) {
+global.permissions.module.dm_only = function (command, member, message) {
     if (message.channel.type == "dm") return true
     // @TODO maybe add a little message to say it's only available in DMs
     return false

@@ -111,7 +111,7 @@ exports.commands = {
 }
 
 
-exports.permission = [global.permissions.guild_only, global.default_permission.bind(null, exports.name)]
+exports.permission = [global.permissions.module.guild_only, global.default_permission.bind(null, exports.name)]
 
 exports.name = "twitch"
 exports.description = "Provides Twitch integration (live notifications)"
