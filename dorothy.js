@@ -135,8 +135,17 @@ client.on('message', async (message) => {
                 
                 // Check for module-specific permissions...
                 if (c.module.permission) {
-                    if (await c.module.permission(command, message.member, message)) throw true;
-                    else throw false;
+                    if (c.module.permission instanceof Array) {
+                        // This is an array of permissions. Every single one must be true for the message to go through.
+                        for (p of c.module.permission) {
+                            if (!(await p(command, message.member, message))) throw false
+                        }
+                        throw true
+                    }
+                    else {
+                        if (await c.module.permission(command, message.member, message)) throw true;
+                        else throw false;
+                    }
                 }
 
                 // Check for default permission...

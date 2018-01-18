@@ -99,3 +99,13 @@ exports.permission = function (command, member) {
     return member.hasPermission(Discord.Permissions.FLAGS.MANAGE_GUILD);
 };
 
+global.permissions.guild_only = function (member, message) {
+    if (message.channel.type == "text") return true
+    return false
+}
+
+global.permissions.dm_only = function (member, message) {
+    if (message.channel.type == "dm") return true
+    // @TODO maybe add a little message to say it's only available in DMs
+    return false
+}
