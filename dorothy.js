@@ -10,9 +10,11 @@ global.settings = JSON.parse(fs.readFileSync("settings.json"));
 const token = settings.token;
 const client = new Discord.Client({ autoReconnect: true});
 
-MongoClient.connect(global.settings.mongo_url, function (err, connection) {
-    assert.equal(null, err);
-    global.db = connection;
+global.db = new Promise( (resolve, reject) => {
+    MongoClient.connect(global.settings.mongo_url, function (err, connection) {
+        assert.equal(null, err);
+        resolve(connection);
+    });
 });
 
 // Some log functionalities
@@ -30,6 +32,8 @@ client.on('ready', () => {
 
 global.client = client;
 global.Discord = Discord;
+
+global.db = await global.db
 
 const auth = require ("./modules/auth")
 
