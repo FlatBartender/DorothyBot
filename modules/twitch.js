@@ -126,7 +126,7 @@ exports.description = "Provides Twitch integration (live notifications)"
 function get_users_by_name(usernames) {
     return new Promise ( (resolve, reject) => {
         var data = ""
-        https.request({
+        let req = https.request({
             hostname: "api.twitch.tv",
             path: "/helix/users?login=" + usernames.join("&login="),
             headers: {
@@ -135,6 +135,8 @@ function get_users_by_name(usernames) {
         }, (res) => {
             res.on("data", (chunk) => data += chunk)
             res.on("end", () => resolve(JSON.parse(data)))
-        }).on("error", (err) => reject(err))
+        })
+        req.on("error", (err) => reject(err))
+        req.end()
     })
 }
