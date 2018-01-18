@@ -6,7 +6,7 @@ const twitch_client_id = global.settings.twitch_id
 
 const twitchWebhook = new TwitchWebhook({
     client_id: twitch_client_id,
-    callback: 'http://alice.gensokyo.eu/twitch',
+    callback: 'http://alice.gensokyo.eu:8443/twitch',
     secret: 'ps4sjhh4b1wk6z74qzl38oa35h3q0q'
 })
 
