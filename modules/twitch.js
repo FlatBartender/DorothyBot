@@ -43,7 +43,7 @@ twitch_db.find().toArray( (err, items) => {
 
 exports.id = 11000
 exports.commands = {
-    "tw set announce": {
+    "twsetannounce": {
         id: 1,
         description: "Set the channel where lives will be announced",
         callback: async function (message) {
@@ -52,7 +52,7 @@ exports.commands = {
             message.channel.send("Channel successfully set as announce channel !")
         }
     },
-    "tw add": {
+    "twadd": {
         id: 2,
         description: "Notify when this streamer goes live",
         callback: async function (message) {
@@ -80,7 +80,7 @@ exports.commands = {
             message.channel.send(`I'm successfully monitoring ${streamer}'s channel !`)
         }
     },
-    "tw del": {
+    "twdel": {
         id: 3,
         description: "Stop notifying when this streamer goes live",
         callback: async function (message) {
