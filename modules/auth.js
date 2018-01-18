@@ -99,6 +99,8 @@ exports.permission = function (command, member) {
     return member.hasPermission(Discord.Permissions.FLAGS.MANAGE_GUILD);
 };
 
+if (!global.permissions) global.permissions = {}
+
 global.permissions.guild_only = function (member, message) {
     if (message.channel.type == "text") return true
     return false
