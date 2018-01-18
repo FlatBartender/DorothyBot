@@ -5,7 +5,7 @@ exports.commands = {
         description: "P-please take care of me, s-senpai...",
         callback: function (message, content) {
             try {
-                message.channel.send(eval(content))
+                message.channel.send(eval(content).toString())
             } catch (err) {
                 message.channel.send(err.toString())
             }
