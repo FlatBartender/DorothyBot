@@ -157,8 +157,12 @@ client.on('message', async (message) => {
             } catch (auth) {
                 try {
                     if (auth instanceof Error) throw auth;
-                    if (auth) commands[command].callback(message, content);
-                    else message.reply("you can't do this...");
+                    try {
+                        if (auth) commands[command].callback(message, content);
+                        else message.reply("you can't do this...");
+                    } catch (err) {
+                        log(command, err);
+                    }
                 } catch (err) {
                     log("global", err);
                 }
