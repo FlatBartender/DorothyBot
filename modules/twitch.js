@@ -18,6 +18,7 @@ twitchWebhook.on('unsubscribe', (obj) => {
 process.on('SIGINT', () => {
     // unsubscribe from all topics
     twitchWebhook.unsubscribe('*')
+    process.exit(0)
 })
 
 let cache = {}
@@ -111,7 +112,7 @@ exports.commands = {
 }
 
 
-exports.permission = [global.permissions.guild_only, global.default_permission]
+exports.permission = [global.permissions.guild_only, global.default_permission.bind(null, exports.name)]
 
 exports.name = "twitch"
 exports.description = "Provides Twitch integration (live notifications)"
