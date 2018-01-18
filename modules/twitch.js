@@ -15,12 +15,17 @@ twitchWebhook.on('unsubscribe', (obj) => {
     twitchWebhook.subscribe(obj['hub.topic'])
 })
 
+twitchWebhook.on("streams", ({event}) => {
+    console.log(event)
+})
+
 process.on('exit', () => {
     // unsubscribe from all topics
     twitchWebhook.unsubscribe('*')
 })
 
 let cache = {}
+let streamer_cache = {}
 
 let twitch_db = global.db.collection("twitch_module")
 
@@ -37,6 +42,7 @@ twitch_db.find().toArray( (err, items) => {
             twitchWebhook.subscribe("streams", {
                 user_id: streamer
             })
+            streamer_cache[streamer] = cache[guild._id].announce_channel
         })
     })
 })
@@ -56,8 +62,8 @@ exports.commands = {
     "twadd": {
         id: 2,
         description: "Notify when this streamer goes live",
-        callback: async function (message) {
-            let streamer = message.split(" ").shift()
+        callback: async function (message, content) {
+            let streamer = content.split(" ").shift()
             if (streamer == "") {
                 message.channel.send("You need to specify a streamer's name !")
                 return
@@ -84,8 +90,8 @@ exports.commands = {
     "twdel": {
         id: 3,
         description: "Stop notifying when this streamer goes live",
-        callback: async function (message) {
-            let streamer = message.split(" ").shift()
+        callback: async function (message, content) {
+            let streamer = content.split(" ").shift()
             if (streamer == "") {
                 message.channel.send("You need to specify a streamer's name !")
                 return
