@@ -7,7 +7,7 @@ exports.commands = {
             try {
                 message.channel.send(eval(content))
             } catch (err) {
-                message.channel.send(err)
+                message.channel.send(err.toString())
             }
         }
     },
