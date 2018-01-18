@@ -1,12 +1,18 @@
 const Discord = require("discord.js");
 const ytdl = require('ytdl-core');
 const fs = require("fs");
+const MongoClient = require("mongodb").MongoClient;
 
 process.on('unhandledRejection', r => console.log(r))
 
 global.settings = JSON.parse(fs.readFileSync("settings.json"));
 const token = settings.token;
 const client = new Discord.Client({ autoReconnect: true});
+
+MongoClient.connect(global.settings.mongo_url, function (err, connection) {
+    assert.equal(null, err);
+    global.db = connection;
+});
 
 // Some log functionalities
 const log_file = fs.createWriteStream(settings.log_file, {flags: "a"});

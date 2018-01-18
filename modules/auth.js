@@ -3,12 +3,7 @@ const Discord = require("discord.js");
 const MongoClient = require("mongodb").MongoClient;
 const assert = require("assert");
 
-let db;
-
-MongoClient.connect(global.settings.mongo_url, function (err, connection) {
-    assert.equal(null, err);
-    db = connection;
-});
+let db = global.db;
 
 exports.id = 3000;
 exports.commands = {
