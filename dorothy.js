@@ -18,6 +18,7 @@ global.log = function (module, message) {
 
 client.on('ready', () => {
     console.log('NOBODY EXPECTS THE DOROTHINQUISITION!');
+    if (client.user) client.user.setGame("Use d!help to get help");
 });
 
 global.client = client;
