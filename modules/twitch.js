@@ -69,11 +69,11 @@ exports.commands = {
                 return
             }
             let data = await get_users_by_name([streamer])
-            if (data.length == 0) {
+            if (data.data.length == 0) {
                 message.channel.send("I can't find this streamer...")
                 return
             }
-            let streamer_id = data[0].id
+            let streamer_id = data.data[0].id
 
             await twitch_db.save({"_id": message.guild.id}, { $push: {"streamers": streamer_id}})
             if (cache[message.guild.id].streamers) cache[message.guild.id].streamers.push(streamer_id)
