@@ -1,8 +1,6 @@
 const ytdl = require('ytdl-core');
 const Discord = require("discord.js");
 
-let db = global.db;
-
 exports.id = 3000;
 exports.commands = {
     "grant": {
