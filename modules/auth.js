@@ -1,7 +1,5 @@
 const ytdl = require('ytdl-core');
 const Discord = require("discord.js");
-const MongoClient = require("mongodb").MongoClient;
-const assert = require("assert");
 
 let db = global.db;
 

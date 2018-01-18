@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const ytdl = require('ytdl-core');
 const fs = require("fs");
 const MongoClient = require("mongodb").MongoClient;
+const assert = require("assert");
 
 process.on('unhandledRejection', r => console.log(r))
 
