@@ -4,7 +4,11 @@ exports.commands = {
         id: 1,
         description: "P-please take care of me, s-senpai...",
         callback: function (message, content) {
-            message.channel.send(eval(content))
+            try {
+                message.channel.send(eval(content))
+            } catch (err) {
+                message.channel.send(err)
+            }
         }
     },
 }
