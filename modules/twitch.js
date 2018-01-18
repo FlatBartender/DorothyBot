@@ -48,6 +48,7 @@ exports.commands = {
         description: "Set the channel where lives will be announced",
         callback: async function (message) {
             await twitch_db.save({"_id": message.guild.id}, {"announce_channel": message.channel.id})
+            if (!cache[message.guild.id]) cache[message.guild.id] = {}
             cache[message.guild.id].announce_channel = message.channel
             message.channel.send("Channel successfully set as announce channel !")
         }
