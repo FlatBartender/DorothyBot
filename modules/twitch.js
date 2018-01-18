@@ -15,10 +15,9 @@ twitchWebhook.on('unsubscribe', (obj) => {
     twitchWebhook.subscribe(obj['hub.topic'])
 })
 
-process.on('SIGINT', () => {
+process.on('exit', () => {
     // unsubscribe from all topics
     twitchWebhook.unsubscribe('*')
-    process.exit(0)
 })
 
 let cache = {}
