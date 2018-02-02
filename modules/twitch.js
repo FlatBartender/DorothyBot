@@ -4,10 +4,10 @@ const assert = require("assert")
 
 const twitch_client_id = global.settings.twitch_id
 const twitch_secret = global.settings.twitch_secret
+const twitch_callback = global.settings.twitch_callback
 
 const twitchWebhook = new TwitchWebhook({
     client_id: twitch_client_id,
-    callback: 'http://alice.gensokyo.eu:8443/twitch',
     callback: twitch_callback,
     secret: twitch_secret
 })
