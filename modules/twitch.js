@@ -104,7 +104,6 @@ exports.commands = {
             else cache[message.guild.id].streamers = [streamer_id]
 
             // Remember that messages to this streamer go to this server's announce channel
-            streamer_cache[streamer_id].guild = message.guild.id
             streamer_cache[streamer_id] = {
                 guild: message.guild.id,
                 name: streamer
