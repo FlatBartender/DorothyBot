@@ -21,7 +21,7 @@ twitchWebhook.on('unsubscribe', (obj) => {
 let event_cache = []
 twitchWebhook.on("streams", ({event}) => {
     // Useful shadowing
-    let event = event.data[0]
+    event = event.data[0]
 
     // Messages can sometimes be received two times. We need to check the ID so that it doesn't happen.
     if (events_cache.includes(event.id)) return
