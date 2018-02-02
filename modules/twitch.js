@@ -3,11 +3,13 @@ const https = require("https")
 const assert = require("assert")
 
 const twitch_client_id = global.settings.twitch_id
+const twitch_secret = global.settings.twitch_secret
 
 const twitchWebhook = new TwitchWebhook({
     client_id: twitch_client_id,
     callback: 'http://alice.gensokyo.eu:8443/twitch',
-    secret: 'ps4sjhh4b1wk6z74qzl38oa35h3q0q'
+    callback: twitch_callback,
+    secret: twitch_secret
 })
 
 // renew the subscription when it expires
@@ -15,8 +17,29 @@ twitchWebhook.on('unsubscribe', (obj) => {
     twitchWebhook.subscribe(obj['hub.topic'])
 })
 
+
+let event_cache = []
 twitchWebhook.on("streams", ({event}) => {
-    console.log(event)
+    // Useful shadowing
+    let event = event.data[0]
+
+    // Messages can sometimes be received two times. We need to check the ID so that it doesn't happen.
+    if (events_cache.includes(event.id)) return
+    // Make sure we empty the event cache sometimes, 1 minute after the last event seems like a good idea
+    if (event_cache.timeout) clearTimeout(event_cache.timeout)
+    event_cache.timeout = setTimeout( () => event_cache = [], 60 * 1000)
+
+    // Message is valid, we can interpret it
+    let streamer_id = event.user_id
+    let streamer = streamer_cache[streamer_id]
+    let channel = cache[streamer.guild].announce_channel
+
+    // If the channel is invalid, look into the cache and try to get it
+    if (!channel) {
+        // TODO
+    }
+
+    channel.send(`${streamer.name} is now live!`)
 })
 
 process.on('exit', () => {
@@ -40,9 +63,10 @@ twitch_db.find().toArray( (err, items) => {
         }
         guild.streamers.forEach( (streamer) => {
             twitchWebhook.subscribe("streams", {
-                user_id: streamer
+                user_id: streamer.id
             })
-            streamer_cache[streamer] = cache[guild._id].announce_channel
+            streamer_cache[streamer].guild = guild
+            streamer_cache[streamer].name = streamer.name
         })
     })
 })
@@ -75,9 +99,16 @@ exports.commands = {
             }
             let streamer_id = data.data[0].id
 
-            await twitch_db.save({"_id": message.guild.id}, { $push: {"streamers": streamer_id}})
+            await twitch_db.save({"_id": message.guild.id}, { $push: {"streamers": {id: streamer_id, name: streamer}}})
             if (cache[message.guild.id].streamers) cache[message.guild.id].streamers.push(streamer_id)
             else cache[message.guild.id].streamers = [streamer_id]
+
+            // Remember that messages to this streamer go to this server's announce channel
+            streamer_cache[streamer_id].guild = message.guild.id
+            streamer_cache[streamer_id] = {
+                guild: message.guild.id,
+                name: streamer
+            }
             
             // Subscribe to channel
             twitchWebhook.subscribe("streams", {
@@ -104,8 +135,11 @@ exports.commands = {
             let streamer_id = data[0].id
 
             await twitch_db.save({"_id": message.guild.id}, { $push: {"streamers": streamer_id}})
-            if (cache[message.guild.id].streamers) cache[message.guild.id].streamers = cache[message.guild.id].streamers.filter((streamer) => streamer != streamer_id)
+            if (cache[message.guild.id].streamers) cache[message.guild.id].streamers = cache[message.guild.id].streamers.filter((streamer) => streamer.id != streamer_id && streamer.name != streamer)
             else cache[message.guild.id].streamers = null
+
+            // Remove this streamer from streamer_cache
+            delete streamer_cache[streamer_id]
             
             // Subscribe to channel
             twitchWebhook.unsubscribe("streams", {
