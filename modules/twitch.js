@@ -24,7 +24,7 @@ twitchWebhook.on("streams", ({event}) => {
     event = event.data[0]
 
     // Messages can sometimes be received two times. We need to check the ID so that it doesn't happen.
-    if (events_cache.includes(event.id)) return
+    if (event_cache.includes(event.id)) return
     // Make sure we empty the event cache sometimes, 1 minute after the last event seems like a good idea
     if (event_cache.timeout) clearTimeout(event_cache.timeout)
     event_cache.timeout = setTimeout( () => event_cache = [], 60 * 1000)
