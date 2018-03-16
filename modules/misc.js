@@ -1,14 +1,11 @@
-exports.id = 2000;
 exports.commands = {
     "ping": {
-        id: 1,
         description: "You ping, I pong!",
         callback: function (message) {
             message.reply("pong");
         }
     },
     "help": {
-        id: 2,
         description: "I help you find all the commands you need!",
         callback: async function (message) {
             message.reply("I'm sending you the commands in DM!");

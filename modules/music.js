@@ -5,13 +5,11 @@ const youtube = google.youtube('v3');
 const URL = require('url').URL;
 
 const queues = {};
-exports.id = 1000;
 
 let client = global.client;
 
 exports.commands = {
     "voice": {
-        id: 1,
         description: "I'll join the voice channel you're in!",
         callback: function (message) {
             if (!message.guild) return;
@@ -35,7 +33,6 @@ exports.commands = {
         }
     },
     "leave": {
-        id: 2,
         description: "I'll leave your voice channel...",
         callback: function (message) {
             if (!message.guild) return;
@@ -60,7 +57,6 @@ exports.commands = {
         }
     },
     "request": {
-        id: 3,
         description: "Request a song! Enter either an URL or some keywords to search with on youtube.",
         callback: async function (message, content) {
             if (!message.guild) return;
@@ -100,7 +96,6 @@ exports.commands = {
         }
     },
     "skip": {
-        id: 4,
         description: "I'll skip the song I'm currently playing.",
         callback: function (message) {
             if (!message.guild) return;
@@ -124,7 +119,6 @@ exports.commands = {
         }
     },
     "resume": {
-        id: 5,
         description: "I'll resume playing if the song was paused!",
         callback: function (message) {
             if (!message.guild) return;
@@ -149,7 +143,6 @@ exports.commands = {
         }
     },
     "pause": {
-        id: 6,
         description: "I'll pause the song I'm playing!",
         callback: function (message) {
             if (!message.guild) return;

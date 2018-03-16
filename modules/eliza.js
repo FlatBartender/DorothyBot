@@ -1,12 +1,9 @@
 const eliza = require("elizabot");
 
-exports.id = 4000;
-
 let sessions = {};
 
 exports.commands = {
     "estart": {
-        id: 1,
         description: "Start a psychotherapy session with me!",
         callback: function (message) {
             sessions[message.member.id] = new eliza();
@@ -14,7 +11,6 @@ exports.commands = {
         }
     },
     "estop": {
-        id: 2,
         description: "Stop the psychotherapy session you're currently in.",
         callback: function (message) {
             if (sessions[message.member.id]) {
@@ -26,7 +22,6 @@ exports.commands = {
         }
     },
     "e": {
-        id: 3,
         description: "Talk with me, and I'll help you as much as I can.",
         callback: function (message, content) {
             let session = sessions[message.member.id];
