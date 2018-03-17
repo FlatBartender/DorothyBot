@@ -10,7 +10,6 @@ MongoClient.connect(global.settings.mongo_url, function (err, connection) {
     db = connection;
 });
 
-exports.id = 3000;
 exports.commands = {
     "grant": {
         description: "I'll grant permissions to a user! Usage: grant <module>[.<command>] @<user> [@<user>...]",
@@ -82,7 +81,7 @@ exports.default_permission = async function default_permission(module, command, 
 
 // Only admins can use this module.
 exports.permission = function (command, member) {
-    if (member.id == "136184101408473089") return true
+    if (settings.auth.whitelist.includes(member.id)) return true
     if (member.hasPermission === undefined) return false
     return member.hasPermission(Discord.Permissions.FLAGS.MANAGE_GUILD)
 };
