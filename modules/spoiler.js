@@ -20,13 +20,12 @@ exports.commands = {
                     },
                     json: true
                 })
+                message.channel.send(`${message.member.nickname}: ${response.url}`)
             } catch (err) {
                 log(err)
                 message.channel.send("I can't upload the message to the server.")
                 return
             }
-
-            message.channel.send(`${message.member.nickname}: ${response.url}`)
 
             // Delete message
             message.delete().catch( err => message.channel.send("I can't delete this message... Please do it yourself !"))
