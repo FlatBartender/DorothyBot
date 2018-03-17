@@ -6,6 +6,7 @@ let client = global.client;
 exports.commands = {
     "spoiler": {
         description: "I'll remove the message and leave a link to it instead !",
+        permissions: function () { return true },
         callback: async function (message, content) {
             // Upload content to spoiler host
             try {
