@@ -20,7 +20,7 @@ exports.commands = {
                     },
                     json: true
                 })
-                message.channel.send(`${message.member.nickname}: ${response.url}`)
+                message.channel.send(`${(message.member && message.member.nickname) || message.author.username}: ${response.url}`)
             } catch (err) {
                 log(err)
                 message.channel.send("I can't upload the message to the server.")
