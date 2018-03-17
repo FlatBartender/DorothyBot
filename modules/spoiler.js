@@ -6,7 +6,6 @@ let client = global.client;
 exports.commands = {
     "spoiler": {
         description: "I'll remove the message and leave a link to it instead !",
-        permissions: function () { return true },
         callback: async function (message, content) {
             // Upload content to spoiler host
             try {
@@ -39,3 +38,9 @@ exports.name = "spoilers";
 exports.description = "Provide spoiler functions !";
 
 let log = global.log.bind(exports, exports.name)
+
+// Anyone can use this module.
+exports.permission = function () {
+    return true;
+}
+
