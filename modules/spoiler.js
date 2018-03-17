@@ -11,9 +11,9 @@ exports.commands = {
             try {
                 let response = await request({
                     method: 'POST',
-                    uri:    global.spoilers.api_host,
+                    uri:    global.settings.spoilers.api_host,
                     headers: {
-                        'Access-Token': global.spoilers.api_key,
+                        'Access-Token': global.settings.spoilers.api_key,
                     }, 
                     body: {
                         message: content
