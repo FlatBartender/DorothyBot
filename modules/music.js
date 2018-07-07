@@ -1,6 +1,7 @@
 const ytdl = require('ytdl-core');
 const request = require('request');
-const google = require('googleapis');
+const {google} = require('googleapis');
+google.options({auth: settings.google_api_key})
 const youtube = google.youtube('v3');
 const URL = require('url').URL;
 
@@ -72,16 +73,16 @@ exports.commands = {
             }
     
             try {
-                let results = await youtube.search.list({part: "snippet", type: "video", q: content, auth: settings.google_api_key}).promise;
+                let results = (await youtube.search.list({part: "snippet", type: "video", q: content})).data
                 let song;
                 let infos = {};
-                if (!results[0].items || results[0].items.length === 0) {
+                if (!results.items || results.items.length === 0) {
                     // Youtube video not found, check if the url is valid then queue it
                     new URL(content);   // This throws a TypeError if there's a problem
                     song = content;     // Might only need song = new URL(content) ? idk how URL handles string conversion
                 } else {
                     // Youtube video found, queue it with the id and let youtube-dl download it
-                    let video = results[0].items[0];
+                    let video = results.items[0];
                     infos = {title: video.snippet.title};
                     song = video.id.videoId; 
                 }
@@ -186,14 +187,14 @@ function playNext(message, connection) {
     
     let song = q.queue.shift();
     q.playing = song;
-    message.channel.send(`Now playing ${song.infos.title ? song.infos.title : song.url}`);
+    message.channel.send(`Now playing ${song.infos.title || song.url}`);
     let stream;
     if (song.infos.title) {
         stream = ytdl(song.url, { filter: 'audioonly' });
     } else {
         stream = request(song.url);
     }
-    q.dispatcher = connection.playStream(stream, {volume: 0.3, bitrate: "auto"});
+    q.dispatcher = connection.playStream(stream, {seek: 0, volume: 0.3, bitrate: "auto"});
     q.dispatcher.once('end', (reason) => {
         console.log("Stream ended with reason: ", reason);
         delete q.dispatcher;

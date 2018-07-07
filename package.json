@@ -21,13 +21,13 @@
     "discord.js": "^11.3.2",
     "elizabot": "0.0.2",
     "erlpack": "github:hammerandchisel/erlpack",
-    "googleapis": "^21.3.0",
+    "googleapis": "^32.0.0",
     "mongodb": "^2.2.35",
     "node-opus": "^0.2.9",
     "request": "^2.87.0",
     "sodium": "^2.0.1",
     "uws": "^8.14.1",
     "youtube-audio-stream": "0.0.50",
-    "ytdl-core": "^0.16.2"
+    "ytdl-core": "^0.20.4"
   }
 }
