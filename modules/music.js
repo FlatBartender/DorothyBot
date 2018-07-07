@@ -1,6 +1,6 @@
 const ytdl = require('ytdl-core');
 const request = require('request');
-const google = require('googleapis-promise');
+const google = require('googleapis');
 const youtube = google.youtube('v3');
 const URL = require('url').URL;
 

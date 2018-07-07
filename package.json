@@ -17,18 +17,17 @@
   },
   "homepage": "https://github.com/FlatBartender/DorothyBot#readme",
   "dependencies": {
-    "bufferutil": "^3.0.2",
-    "discord.js": "^11.1.0",
+    "bufferutil": "^3.0.5",
+    "discord.js": "^11.3.2",
     "elizabot": "0.0.2",
     "erlpack": "github:hammerandchisel/erlpack",
     "googleapis": "^21.3.0",
-    "googleapis-promise": "^16.1.0-a1",
-    "mongodb": "^2.2.31",
-    "node-opus": "^0.2.6",
-    "request": "^2.81.0",
+    "mongodb": "^2.2.35",
+    "node-opus": "^0.2.9",
+    "request": "^2.87.0",
     "sodium": "^2.0.1",
     "uws": "^8.14.1",
     "youtube-audio-stream": "0.0.50",
-    "ytdl-core": "^0.16.0"
+    "ytdl-core": "^0.16.2"
   }
 }
