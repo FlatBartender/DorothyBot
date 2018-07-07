@@ -57,6 +57,28 @@ exports.commands = {
             }
         }
     },
+    "queue": {
+        description: "I'll show the queued songs!",
+        callback: async function (message) {
+            if (!message.guild) return;
+            let channel = message.member.voiceChannel;
+            if (!channel) {
+                message.channel.send("Only listeners can ask for the queue.");
+                return;
+            }
+            let connection = client.voiceConnections.find("channel", channel);
+            if (!connection) {
+                message.channel.send("I'm not even broadcasting anything in your channel...");
+                return;
+            }
+            
+            let lines = []
+            queues[channel.guild.id].queue.forEach( (song, index) => {
+                lines.push(`${("     "+(index+1)).slice(-5)}: ${song.infos.title || song.url}`)
+            })
+            channel.send("```\n" + lines.join("\n") + "```")
+        }
+    },
     "request": {
         description: "Request a song! Enter either an URL or some keywords to search with on youtube.",
         callback: async function (message, content) {
