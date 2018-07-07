@@ -83,7 +83,7 @@ function wrap(item) {
     else return [item]
 }
 
-function check_permissions(c, module, command, member, message) {
+function check_permissions(c, message, member, module, command) {
     // Check there are command-specific permissions...
     if (c.permission) {
         return Promise.all(wrap(c.permission).map( p => p(message, member, module, command) ))
