@@ -134,7 +134,7 @@ client.on('message', async (message) => {
         if (commands[command]) {
             let c = commands[command];
             try {
-                if (await check_permissions(c, message, message.member, c.module, command)) {
+                if ((await check_permissions(c, message, message.member, c.module, command)).every( r => r === true )) {
                     c.callback(message, content)
                 } else {
                     message.reply("you can't do this...")
