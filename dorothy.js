@@ -134,13 +134,16 @@ client.on('message', async (message) => {
         if (commands[command]) {
             let c = commands[command];
             try {
-                if (await check_permissions(c)) {
+                if (await check_permissions(c, message, message.member, c.module, command)) {
                     c.callback(message, content)
                 } else {
                     message.reply("you can't do this...")
                 }
             } catch (err) {
                 log("global", err)
+                if (err instanceof Error) {
+                    log("global-debug", err.stack)
+                }
             }
         } 
     }
