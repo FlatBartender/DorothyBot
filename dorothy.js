@@ -74,6 +74,27 @@ Object.keys(modules).forEach((module) => {
     if (m.always) always.push(m.always)
 });
 
+function wrap(item) {
+    if (item instanceof Array) return item
+    else return [item]
+}
+
+function check_permissions(c, module, command, member, message) {
+    // Check there are command-specific permissions...
+    if (c.permission) {
+        return Promise.all(wrap(c.permission).map( p => p(message, member, module, command) ))
+    }
+
+    // Check for module-specific permissions...
+    if (c.module.permission) {
+        return Promise.all(wrap(c.module.permission).map( p => p(message, member, module, command) ))
+    }
+
+    // Check for default permission...
+    if (default_permission) {
+        return Promise.all(wrap(default_permission).map( p => p(message, member, module, command) ))
+    }
+}
 
 client.on('message', async (message) => {
     // Run always callbacks
@@ -104,49 +125,20 @@ client.on('message', async (message) => {
         let command = words.shift().substring(prefix.length);
         // For easy access to the command's string
         let content = words.join(" ");
-        
+
         // If the command exists
         if (commands[command]) {
             let c = commands[command];
-            
             try {
-                // Check there are command-specific permissions...
-                if (c.permission) {
-                    // If there are, check permissions. Throw true if user is authorized, false otherwise.
-                    if (c.permission instanceof Array) {
-                        // This is an array of permissions. Every single one must be true for the message to go through.
-                        for (p of c.permission) {
-                            if (!(await p(message.member, message))) throw false
-                        }
-                        throw true
-                    }
-                    else {
-                        if (await c.permission(message.member, message)) throw true;
-                        else throw false;
-                    }
+                if (await check_permissions(c)) {
+                    c.callback(message, content)
+                } else {
+                    message.reply("you can't do this...")
                 }
-                
-                // Check for module-specific permissions...
-                if (c.module.permission) {
-                    if (await c.module.permission(command, message.member, message)) throw true;
-                    else throw false;
-                }
-
-                // Check for default permission...
-                if (default_permission) {
-                    if (await default_permission(c.module.name, command, message.member)) throw true;
-                    else throw false;
-                }
-            } catch (auth) {
-                try {
-                    if (auth instanceof Error) throw auth;
-                    if (auth) commands[command].callback(message, content);
-                    else message.reply("you can't do this...");
-                } catch (err) {
-                    log("global", err);
-                }
+            } catch (err) {
+                log("global", err)
             }
-        }
+        } 
     }
 });
 

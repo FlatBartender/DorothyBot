@@ -72,7 +72,7 @@ exports.commands = {
 exports.name = "auth";
 exports.description = "Module providing permissions. Can only be used by users with the manage server permission.";
 
-exports.default_permission = async function default_permission(module, command, member) {
+exports.default_permission = async function default_permission(message, member, module, command) {
     if (member.guild === undefined) return false;
     let user = await db.collection(member.guild.id).findOne({"_id": member.id});
     if (!user) return false;
@@ -80,7 +80,7 @@ exports.default_permission = async function default_permission(module, command, 
 };
 
 // Only admins can use this module.
-exports.permission = function (command, member) {
+exports.permission = function (message, member, module, command) {
     if (settings.auth.whitelist.includes(member.id)) return true
     if (member.hasPermission === undefined) return false
     return member.hasPermission(Discord.Permissions.FLAGS.MANAGE_GUILD)
