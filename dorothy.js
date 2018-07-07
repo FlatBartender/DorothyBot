@@ -105,7 +105,7 @@ client.on('message', async (message) => {
         log("always", err)
     }
 
-    if (message.content.startsWith(say_prefix) && settings.auth.whitelist.includes(message.author.id) {
+    if (message.content.startsWith(say_prefix) && settings.auth.whitelist.includes(message.author.id)) {
         let words = message.content.split(' ');
         let channel_id = words.shift().substring(say_prefix.length);
         let content = words.join(' ');
