@@ -48,9 +48,9 @@ exports.commands = {
             }
             let connection = client.voiceConnections.find("channel", channel);
             if (connection) {
+                delete queues[channel.guild.id];
                 connection.disconnect();
                 message.channel.send("I'm leaaaviiiing! Bye!");
-                delete queues[channel.guild.id];
                 return;
             } else {
                 message.channel.send("I can't leave a channel I'm not in...");
@@ -73,10 +73,17 @@ exports.commands = {
             }
             
             let lines = []
-            queues[channel.guild.id].queue.forEach( (song, index) => {
+            let queue = queues[channel.guild.id]
+            if (queue.playing) {
+                lines.push(`Now playing: ${queue.playing.infos.title || queue.playing.url} ${queue.paused ? "(paused)" : ""}`)
+            }
+            queue.queue.forEach( (song, index) => {
                 lines.push(`${("     "+(index+1)).slice(-5)}: ${song.infos.title || song.url}`)
             })
-            channel.send("```\n" + lines.join("\n") + "```")
+
+            // Nothing playing, nothing in queue
+            if (lines.length === 0) lines.push("The queue is empty.")
+            message.channel.send("```\n" + lines.join("\n") + "```")
         }
     },
     "request": {
@@ -162,6 +169,7 @@ exports.commands = {
             }
     
             queues[channel.guild.id].dispatcher.resume();
+            delete queues[channel.guild.id].paused
             message.channel.send("Music resumed!");
         }
     },
@@ -186,6 +194,7 @@ exports.commands = {
             }
     
             queues[channel.guild.id].dispatcher.pause();
+            queues[channel.guild.id].paused = true;
             message.channel.send("Music paused!");
         }
     }
@@ -195,6 +204,9 @@ exports.description = "To play music in a voice channel!";
 
 function playNext(message, connection) {
     let q = queues[message.guild.id];
+    if (!q) return
+    delete q.playing
+    delete q.paused
     if (!q.queue) {
         //Queue is empty.
         message.channel.send("I have nothing to play.");
@@ -219,8 +231,10 @@ function playNext(message, connection) {
     q.dispatcher = connection.playStream(stream, {seek: 0, volume: 0.3, bitrate: "auto"});
     q.dispatcher.once('end', (reason) => {
         console.log("Stream ended with reason: ", reason);
-        delete q.dispatcher;
-        playNext(message, connection);
+        if (q) {
+            delete q.dispatcher;
+            playNext(message, connection);
+        }
     });
     q.dispatcher.on("error", (err) => {
         console.log(err);
