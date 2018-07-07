@@ -29,10 +29,7 @@ global.Discord = Discord;
 
 const auth = require ("./modules/auth")
 
-const default_permission = auth.default_permission;
-global.default_permission = (module, command) => {
-    return default_permission.bind(null, module, command)
-}
+global.default_permission = auth.default_permission;
 
 const modules_found = require("./modules/")
 global.modules = {}
@@ -98,6 +95,8 @@ function check_permissions(c, message, member, module, command) {
     if (default_permission) {
         return Promise.all(wrap(default_permission).map( p => p(message, member, module, command) ))
     }
+
+    return [true]
 }
 
 client.on('message', async (message) => {
@@ -134,7 +133,7 @@ client.on('message', async (message) => {
         if (commands[command]) {
             let c = commands[command];
             try {
-                if ((await check_permissions(c, message, message.member, c.module, command)).every( r => r === true )) {
+                if ((await check_permissions(c, message, message.member, c.module.name, command)).every( r => r === true )) {
                     c.callback(message, content)
                 } else {
                     message.reply("you can't do this...")
